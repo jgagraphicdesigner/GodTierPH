@@ -151,9 +151,15 @@ h3{font-size:1.18rem;letter-spacing:0}
 .tag-enemy{top:47%;right:5%;color:#ffaaa3}
 .route-bottom{top:64%;left:38%;border-color:rgba(255,105,93,.5)}
 .route-top{top:33%;left:38%;border-color:rgba(78,168,255,.5)}
+.sub-league-map-card{width:min(1380px,100%);margin:0 auto 28px;overflow:hidden;border:1px solid rgba(86,182,255,.36);border-radius:8px;background:#0f141b;box-shadow:var(--shadow),0 0 34px rgba(78,168,255,.14)}
+.sub-league-map{width:100%;height:auto;max-height:76vh;object-fit:contain;background:#0f141b}
+.map-markings{margin-top:0}
+.sub-league-reminder{max-width:980px;margin:0 auto;text-align:center}
+.sub-league-reminder h2{font-size:clamp(2rem,4vw,4rem)}
+.sub-league-reminder p{max-width:820px;margin-left:auto;margin-right:auto;font-size:1.08rem}
 .strategy-steps-section{width:min(1600px,calc(100% - 36px))}
 .step-card{min-height:0;display:grid;align-content:start;gap:14px;overflow:hidden;padding:0}
-.step-no{display:grid;place-items:center;width:42px;height:42px;margin:28px 30px 0;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
+.step-no,.step-number{display:grid;place-items:center;width:42px;height:42px;margin:28px 30px 0;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
 .step-card h3,.step-card ul,.step-card p{margin:0}
 .step-card h3{padding:0 30px;font-size:clamp(1.45rem,2vw,2.2rem)}
 .step-figure{order:-1;margin:0;border:0;border-bottom:1px solid #303946;overflow:hidden;background:#0f141b}
