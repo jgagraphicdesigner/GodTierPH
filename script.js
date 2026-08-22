@@ -286,6 +286,130 @@ refreshPartyList?.addEventListener('click', loadPartyList);
 loadPartyList();
 setInterval(loadPartyList, 5 * 60 * 1000);
 
+(function initOnlineUsersWidget() {
+  if (document.getElementById('onlineUsersWidget')) return;
+
+  const storagePrefix = 'godtierphPresence:';
+  const sessionKey = 'godtierphPresenceSession';
+  const ttl = 18000;
+  const heartbeatDelay = 6000;
+  const endpoint = window.GODTIERPH_PRESENCE_ENDPOINT || '';
+
+  function safeSessionId() {
+    try {
+      let id = sessionStorage.getItem(sessionKey);
+      if (!id) {
+        id = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+        sessionStorage.setItem(sessionKey, id);
+      }
+      return id;
+    } catch (error) {
+      return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    }
+  }
+
+  const sessionId = safeSessionId();
+  const widget = document.createElement('aside');
+  widget.className = 'online-users-widget';
+  widget.id = 'onlineUsersWidget';
+  widget.setAttribute('aria-label', 'Current users online');
+  widget.innerHTML = `
+    <span class="online-users-icon" aria-hidden="true"><span class="online-users-pulse"></span></span>
+    <span class="online-users-copy">
+      <strong class="online-users-count" id="onlineUsersCount">1</strong>
+      <span class="online-users-label">Online now</span>
+    </span>
+  `;
+  document.body.append(widget);
+
+  const countNode = document.getElementById('onlineUsersCount');
+
+  function setCount(value) {
+    const count = Math.max(1, Number.parseInt(value, 10) || 1);
+    countNode.textContent = count.toLocaleString();
+  }
+
+  function localPresenceCount() {
+    const now = Date.now();
+    let count = 1;
+
+    try {
+      localStorage.setItem(`${storagePrefix}${sessionId}`, String(now));
+
+      count = Object.keys(localStorage).reduce((total, key) => {
+        if (!key.startsWith(storagePrefix)) return total;
+
+        const lastSeen = Number(localStorage.getItem(key));
+        if (!lastSeen || now - lastSeen > ttl) {
+          localStorage.removeItem(key);
+          return total;
+        }
+
+        return total + 1;
+      }, 0);
+    } catch (error) {
+      count = 1;
+    }
+
+    return Math.max(1, count);
+  }
+
+  async function syncPresence(localCount) {
+    if (!endpoint) {
+      setCount(localCount);
+      return;
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId,
+          path: window.location.pathname,
+          active: true,
+          timestamp: Date.now(),
+        }),
+        cache: 'no-store',
+        keepalive: true,
+      });
+      if (!response.ok) throw new Error('Presence request failed');
+
+      const data = await response.json();
+      setCount(data.online ?? data.count ?? localCount);
+    } catch (error) {
+      setCount(localCount);
+    }
+  }
+
+  function heartbeat() {
+    syncPresence(localPresenceCount());
+  }
+
+  function releasePresence() {
+    try {
+      localStorage.removeItem(`${storagePrefix}${sessionId}`);
+    } catch (error) {
+      // Storage can be unavailable in private browsing.
+    }
+
+    if (endpoint && navigator.sendBeacon) {
+      const body = JSON.stringify({
+        sessionId,
+        path: window.location.pathname,
+        active: false,
+        timestamp: Date.now(),
+      });
+      navigator.sendBeacon(endpoint, new Blob([body], { type: 'application/json' }));
+    }
+  }
+
+  window.addEventListener('storage', heartbeat);
+  window.addEventListener('pagehide', releasePresence);
+  heartbeat();
+  window.setInterval(heartbeat, heartbeatDelay);
+}());
+
 (function initStormIntro() {
   const seenKey = 'godtierphStormIntroSeen';
   const thunderKey = 'godtierphThunderPlayed';

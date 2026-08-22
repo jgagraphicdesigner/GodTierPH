@@ -173,6 +173,15 @@ h3{font-size:1.18rem;letter-spacing:0}
 .error-row{border:1px solid rgba(255,105,93,.55);border-radius:8px;padding:20px;color:#ffaaa3;background:rgba(255,105,93,.08)}
 footer{display:flex;align-items:center;gap:12px;border-top:1px solid rgba(242,193,91,.18);padding:24px clamp(18px,4vw,56px);background:#07080c;color:#d9d0c3}
 footer img{width:42px;height:42px;border-radius:50%}
+.online-users-widget{position:fixed;right:18px;bottom:18px;z-index:120;display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 13px;border:1px solid rgba(86,182,255,.48);border-radius:8px;background:linear-gradient(135deg,rgba(10,18,28,.92),rgba(12,24,38,.88));box-shadow:0 16px 42px rgba(0,0,0,.42),0 0 26px rgba(78,168,255,.18);backdrop-filter:blur(14px);color:#f5f0e8}
+.online-users-icon{position:relative;width:34px;height:34px;border-radius:50%;border:1px solid rgba(120,215,255,.5);background:radial-gradient(circle at 35% 28%,rgba(170,230,255,.96) 0 10%,rgba(78,168,255,.42) 11% 28%,rgba(12,28,46,.78) 29% 100%);box-shadow:0 0 18px rgba(78,168,255,.38)}
+.online-users-icon:before,.online-users-icon:after{content:"";position:absolute;border-radius:999px;background:#d9f2ff;box-shadow:0 0 10px rgba(142,220,255,.7)}
+.online-users-icon:before{width:8px;height:8px;left:9px;top:9px}
+.online-users-icon:after{width:17px;height:8px;left:8px;bottom:8px}
+.online-users-pulse{position:absolute;right:-2px;top:-2px;width:10px;height:10px;border-radius:50%;background:#56b6ff;box-shadow:0 0 0 0 rgba(86,182,255,.62);animation:online-pulse 1.8s ease-out infinite}
+.online-users-copy{display:grid;gap:1px}
+.online-users-count{font-size:1.1rem;font-weight:950;line-height:1;color:white}
+.online-users-label{font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#9fd3ff;white-space:nowrap}
 .storm-overlay{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;mix-blend-mode:screen;animation:storm-overlay-life 2.25s ease-out forwards}
 .storm-overlay:before,.storm-overlay:after{content:"";position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 68% 12%,rgba(150,220,255,.72),transparent 22%),linear-gradient(180deg,rgba(105,190,255,.54),rgba(255,255,255,.08) 34%,transparent 62%);animation:storm-flash 2.1s ease-out forwards}
 .storm-overlay:after{animation-delay:.32s;background:radial-gradient(circle at 34% 0%,rgba(205,235,255,.62),transparent 26%),linear-gradient(180deg,rgba(120,205,255,.32),transparent 54%)}
@@ -184,7 +193,8 @@ footer img{width:42px;height:42px;border-radius:50%}
 @keyframes storm-bolt-strike{0%,7%,100%{opacity:0;transform:translate3d(-8px,-16px,0) scaleY(.92)}8%,16%{opacity:1;transform:translate3d(0,0,0) scaleY(1)}22%{opacity:.2}31%{opacity:.85;transform:translate3d(8px,6px,0) scaleY(1.04)}44%{opacity:0}}
 @keyframes electric-static-drift{0%{background-position:0 0,0 0,0 0,0 0}100%{background-position:42px 84px,-42px 42px,120px 70px,-90px 50px}}
 @keyframes electric-static-flash{0%,12%,16%,32%,36%,57%,61%,100%{opacity:.1;transform:translate3d(0,0,0)}13%,33%,58%{opacity:.38;transform:translate3d(2px,-1px,0)}14%,34%,59%{opacity:.18;transform:translate3d(-1px,1px,0)}}
-@media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}body:after{opacity:.08}.storm-overlay{display:none}}
+@keyframes online-pulse{0%{box-shadow:0 0 0 0 rgba(86,182,255,.62)}70%{box-shadow:0 0 0 10px rgba(86,182,255,0)}100%{box-shadow:0 0 0 0 rgba(86,182,255,0)}}
+@media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}body:after{opacity:.08}.storm-overlay{display:none}.online-users-pulse{animation:none}}
 @media(max-width:1050px){
   .hero,.split-section,.event-row{grid-template-columns:1fr}
   .setup-grid{grid-template-columns:repeat(2,1fr)}
@@ -216,4 +226,8 @@ footer img{width:42px;height:42px;border-radius:50%}
   .map-tag,.map-route{display:none}
   .sheet-actions{align-items:flex-start;flex-direction:column}
   .sheet-panel iframe{height:460px}
+  .online-users-widget{right:12px;bottom:12px;min-height:50px;padding:9px 11px}
+  .online-users-icon{width:30px;height:30px}
+  .online-users-count{font-size:1rem}
+  .online-users-label{font-size:.6rem}
 }
