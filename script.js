@@ -77,33 +77,36 @@ document.addEventListener('click', (event) => {
   }
 });
 
-(function initHomeHeroVideo() {
-  const hero = document.querySelector('[data-home-hero]');
-  const video = hero?.querySelector('[data-home-hero-video]');
+(function initHeroVideos() {
+  const heroes = document.querySelectorAll('[data-home-hero], [data-video-hero]');
 
-  if (!hero || !video) return;
+  heroes.forEach((hero) => {
+    const video = hero.querySelector('[data-home-hero-video], [data-video-hero-video]');
 
-  function showStaticHero() {
-    hero.classList.remove('video-ready');
-    hero.classList.add('video-ended');
-    video.pause();
-  }
+    if (!video) return;
 
-  video.addEventListener('playing', () => {
-    if (!hero.classList.contains('video-ended')) {
-      hero.classList.add('video-ready');
+    function showStaticHero() {
+      hero.classList.remove('video-ready');
+      hero.classList.add('video-ended');
+      video.pause();
     }
-  }, { once: true });
 
-  video.addEventListener('ended', showStaticHero);
-  video.addEventListener('error', () => {
-    hero.classList.add('video-unavailable');
-  }, { once: true });
+    video.addEventListener('playing', () => {
+      if (!hero.classList.contains('video-ended')) {
+        hero.classList.add('video-ready');
+      }
+    }, { once: true });
 
-  const playAttempt = video.play();
-  if (playAttempt?.catch) {
-    playAttempt.catch(() => hero.classList.add('video-unavailable'));
-  }
+    video.addEventListener('ended', showStaticHero);
+    video.addEventListener('error', () => {
+      hero.classList.add('video-unavailable');
+    }, { once: true });
+
+    const playAttempt = video.play();
+    if (playAttempt?.catch) {
+      playAttempt.catch(() => hero.classList.add('video-unavailable'));
+    }
+  });
 }());
 
 const partyList = document.getElementById('partyList');

@@ -7,8 +7,9 @@
   <meta name="description" content="GodTierPH recruitment page for Ragnarok: The New World on Owl Baron server." />
   <title>GTPH Recruit | GodTierPH Recruitment</title>
   <link rel="icon" type="image/png" href="/assets/godtierph-icon.png" />
+  <link rel="preload" as="image" href="/assets/home-hero.png" />
   <link rel="preload" as="image" href="/assets/gtph-recruitment-poster.png" />
-  <link rel="stylesheet" href="/styles.css?v=recruit-3" />
+  <link rel="stylesheet" href="/styles.css?v=recruit-video-1" />
 </head>
 <body class="recruit-page">
   <header class="recruit-topbar">
@@ -20,7 +21,11 @@
   </header>
 
   <main class="recruit-main">
-    <section class="recruit-hero">
+    <section class="recruit-hero" data-video-hero>
+      <img class="recruit-hero-bg" src="/assets/home-hero.png" alt="" aria-hidden="true" fetchpriority="high" decoding="async" />
+      <video class="recruit-hero-video" autoplay muted playsinline preload="auto" poster="/assets/home-hero.png" aria-hidden="true" data-video-hero-video>
+        <source src="/assets/home-hero-video.mp4" type="video/mp4" />
+      </video>
       <div class="recruit-copy">
         <p class="eyebrow">OWL BARON SERVER</p>
         <h1>Join GodTierPH</h1>
@@ -105,6 +110,6 @@
     <span><strong>GODTIERPH</strong><small>Stronger together. Legends forever.</small></span>
   </footer>
 
-  <script src="/script.js?v=presence-1"></script>
+  <script src="/script.js?v=recruit-video-1"></script>
 </body>
 </html>
