@@ -245,6 +245,31 @@ footer img{width:42px;height:42px;border-radius:50%}
 .online-users-copy{display:grid;gap:1px}
 .online-users-count{font-size:1.1rem;font-weight:950;line-height:1;color:white}
 .online-users-label{font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#9fd3ff;white-space:nowrap}
+.recruit-page{background:
+  radial-gradient(ellipse at 50% -10%,rgba(78,168,255,.24),transparent 36%),
+  radial-gradient(ellipse at 12% 22%,rgba(43,117,210,.16),transparent 30%),
+  radial-gradient(ellipse at 88% 18%,rgba(84,195,255,.12),transparent 30%),
+  linear-gradient(180deg,#04070d 0%,#07101a 48%,#05070b 100%)}
+.recruit-topbar{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px clamp(18px,4vw,56px);border-bottom:1px solid rgba(86,182,255,.22);background:rgba(5,8,13,.82);backdrop-filter:blur(16px)}
+.recruit-main{position:relative;z-index:1}
+.recruit-hero{width:min(1220px,calc(100% - 36px));margin:0 auto;padding:clamp(54px,7vw,92px) 0 28px;display:grid;gap:30px;justify-items:center;text-align:center}
+.recruit-copy{max-width:850px}
+.recruit-copy h1{margin-left:auto;margin-right:auto;background:linear-gradient(180deg,#fff 0%,#d8edff 42%,#56b6ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;filter:drop-shadow(0 0 24px rgba(86,182,255,.32))}
+.recruit-copy .hero-text{margin-left:auto;margin-right:auto;color:#d8d1c8}
+.recruit-poster-frame{width:min(780px,100%);margin:0;overflow:hidden;border:1px solid rgba(86,182,255,.5);border-radius:10px;background:#070b12;box-shadow:0 24px 80px rgba(0,0,0,.56),0 0 46px rgba(78,168,255,.2)}
+.recruit-poster-frame img{width:100%;height:auto}
+.recruit-info-section,.recruit-ranking-section{padding-top:44px}
+.recruit-info-section .section-title,.recruit-ranking-card > div:first-child{margin-left:auto;margin-right:auto;text-align:center}
+.recruit-stat-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
+.recruit-stat,.recruit-ranking-card,.recruit-rank-grid article{border:1px solid rgba(86,182,255,.28);border-radius:8px;background:linear-gradient(180deg,rgba(16,24,36,.94),rgba(8,12,18,.96));box-shadow:var(--shadow),0 0 24px rgba(78,168,255,.08)}
+.recruit-stat{min-height:108px;padding:16px;display:grid;align-content:center;gap:7px;text-align:center}
+.recruit-stat span,.recruit-rank-grid span{color:#91cfff;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.recruit-stat strong{font-size:clamp(1rem,1.3vw,1.35rem);line-height:1.12;color:#f8f3ea}
+.recruit-ranking-card{padding:clamp(22px,4vw,42px)}
+.recruit-rank-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
+.recruit-rank-grid article{padding:22px;text-align:center}
+.recruit-rank-grid strong{display:block;margin:8px 0;color:var(--gold);font-size:clamp(1.5rem,3vw,2.45rem);line-height:1.05}
+.recruit-rank-grid p{margin:0;color:#d7cfc5}
 .storm-overlay{position:fixed;inset:0;z-index:9999;pointer-events:none;overflow:hidden;mix-blend-mode:screen;animation:storm-overlay-life 2.25s ease-out forwards}
 .storm-overlay:before,.storm-overlay:after{content:"";position:absolute;inset:0;opacity:0;background:radial-gradient(circle at 68% 12%,rgba(150,220,255,.72),transparent 22%),linear-gradient(180deg,rgba(105,190,255,.54),rgba(255,255,255,.08) 34%,transparent 62%);animation:storm-flash 2.1s ease-out forwards}
 .storm-overlay:after{animation-delay:.32s;background:radial-gradient(circle at 34% 0%,rgba(205,235,255,.62),transparent 26%),linear-gradient(180deg,rgba(120,205,255,.32),transparent 54%)}
@@ -316,4 +341,10 @@ footer img{width:42px;height:42px;border-radius:50%}
   .online-users-icon{width:28px;height:28px}
   .online-users-count{font-size:1rem}
   .online-users-label{display:none}
+  .recruit-topbar{padding:10px 14px}
+  .recruit-topbar .btn{min-height:38px;padding:8px 11px;font-size:.85rem}
+  .recruit-hero{width:min(100% - 24px,1220px);padding:44px 0 20px}
+  .recruit-poster-frame{border-radius:8px}
+  .recruit-stat-grid,.recruit-rank-grid{grid-template-columns:1fr}
+  .recruit-stat{min-height:86px}
 }
