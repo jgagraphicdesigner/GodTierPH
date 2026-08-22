@@ -134,6 +134,10 @@
         <p>This pulls from your published Google Sheet and redraws the party cards automatically when the sheet updates.</p>
       </div>
       <div class="sheet-panel">
+        <div class="league-tabs" role="tablist" aria-label="Party list league selector">
+          <button class="league-tab active" type="button" data-league="main" role="tab" aria-selected="true">Main League</button>
+          <button class="league-tab" type="button" data-league="sub" role="tab" aria-selected="false">Sub League</button>
+        </div>
         <div class="sheet-actions">
           <a class="btn primary" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pubhtml" target="_blank" rel="noopener">Open Party List</a>
           <button class="btn secondary" type="button" id="refreshPartyList">Refresh List</button>

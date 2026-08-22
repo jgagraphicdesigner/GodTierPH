@@ -37,7 +37,16 @@ document.addEventListener('click', (event) => {
 const partyList = document.getElementById('partyList');
 const partyListStatus = document.getElementById('partyListStatus');
 const refreshPartyList = document.getElementById('refreshPartyList');
-const rosterCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?output=csv';
+const leagueTabs = document.querySelectorAll('[data-league]');
+const rosterCsvUrls = {
+  main: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=495643243&single=true&output=csv',
+  sub: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=1609318158&single=true&output=csv',
+};
+const leagueLabels = {
+  main: 'Main League',
+  sub: 'Sub League',
+};
+let activeLeague = 'main';
 
 function parseCsv(csv) {
   const rows = [];
@@ -202,7 +211,9 @@ function renderRoster(sections) {
 
 async function loadPartyList() {
   if (!partyList) return;
-  partyListStatus.textContent = 'Updating roster';
+  const leagueLabel = leagueLabels[activeLeague] || 'Party List';
+  const rosterCsvUrl = rosterCsvUrls[activeLeague] || rosterCsvUrls.main;
+  partyListStatus.textContent = `Updating ${leagueLabel}`;
 
   try {
     const response = await fetch(`${rosterCsvUrl}&cache=${Date.now()}`);
@@ -210,13 +221,27 @@ async function loadPartyList() {
     const csv = await response.text();
     const sections = parseRoster(parseCsv(csv));
     renderRoster(sections);
-    partyListStatus.textContent = `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    partyListStatus.textContent = `${leagueLabel} updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   } catch (error) {
     partyList.replaceChildren(textNode('div', 'error-row', 'Could not load the party list. Use the Open Party List button while Google refreshes the published sheet.'));
     partyListStatus.textContent = 'Roster unavailable';
   }
 }
 
+function setActiveLeague(league) {
+  if (!rosterCsvUrls[league] || league === activeLeague) return;
+  activeLeague = league;
+  leagueTabs.forEach((tab) => {
+    const isActive = tab.dataset.league === activeLeague;
+    tab.classList.toggle('active', isActive);
+    tab.setAttribute('aria-selected', String(isActive));
+  });
+  loadPartyList();
+}
+
+leagueTabs.forEach((tab) => {
+  tab.addEventListener('click', () => setActiveLeague(tab.dataset.league));
+});
 refreshPartyList?.addEventListener('click', loadPartyList);
 loadPartyList();
 setInterval(loadPartyList, 5 * 60 * 1000);
