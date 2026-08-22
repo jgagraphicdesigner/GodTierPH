@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07080c" />
+  <meta name="description" content="GodTierPH Guild League party list for Ragnarok: The New World." />
+  <title>GodTierPH | Guild League Party List</title>
+  <link rel="icon" type="image/png" href="assets/godtierph-icon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="GodTierPH home">
+      <img src="assets/godtierph-icon.png" alt="GodTierPH guild emblem" class="brand-icon" />
+      <span><strong>GODTIERPH</strong><small>Rise Above. Fight As One.</small></span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">Menu</button>
+    <nav id="mainNav" class="nav" aria-label="Primary navigation">
+      <a href="/">Home</a>
+      <div class="nav-group">
+        <a href="/guild-events">Guild Events</a>
+        <div class="submenu" aria-label="Guild Events submenu">
+          <a href="/weekly-raffles">Weekly Raffles</a>
+          <a href="/clash-of-gods">5v5 Clash of Gods</a>
+          <a href="/crown-contribution">Crown of Contribution</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a class="active" href="/guild-league">Guild League</a>
+        <div class="submenu" aria-label="Guild League submenu">
+          <a href="/guild-league-strategy">Strategy</a>
+          <a class="active" href="/guild-league-party-list">Party List</a>
+        </div>
+      </div>
+      <a href="/siege">Siege</a>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero section">
+      <p class="eyebrow">GUILD LEAGUE PARTY LIST</p>
+      <h1>Main League and Sub League roster.</h1>
+      <p class="hero-text">Switch between the live Main League and Sub League tabs. The cards refresh from the published Google Sheet automatically.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#party-list">Open Roster</a>
+        <a class="btn secondary" href="/guild-league-strategy">Strategy Steps</a>
+      </div>
+    </section>
+
+    <section id="party-list" class="section tight">
+      <div class="section-title">
+        <p class="eyebrow">PARTY LIST</p>
+        <h2>Live roster, styled for the site.</h2>
+        <p>This pulls from your published Google Sheet and redraws the party cards automatically when the sheet updates.</p>
+      </div>
+      <div class="sheet-panel">
+        <div class="league-tabs" role="tablist" aria-label="Party list league selector">
+          <button class="league-tab active" type="button" data-league="main" role="tab" aria-selected="true">Main League</button>
+          <button class="league-tab" type="button" data-league="sub" role="tab" aria-selected="false">Sub League</button>
+        </div>
+        <div class="sheet-actions">
+          <a class="btn primary" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pubhtml" target="_blank" rel="noopener">Open Party List</a>
+          <button class="btn secondary" type="button" id="refreshPartyList">Refresh List</button>
+          <span class="status-pill" id="partyListStatus">Loading roster</span>
+        </div>
+        <div class="party-board" id="partyList" aria-live="polite">
+          <div class="loading-row">Loading party list from Google Sheets...</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="assets/godtierph-icon.png" alt="" />
+    <span><strong>GODTIERPH</strong><small>Guild League Party List</small></span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

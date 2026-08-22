@@ -10,6 +10,8 @@ Responsive static website for GodTierPH.
 - `clash-of-gods.html` - 5v5 Clash of Gods event page
 - `crown-contribution.html` - Crown of Contribution event page
 - `guild-league.html` - Guild League strategy, side maps, live styled party list, roles
+- `guild-league-strategy.html` - Full-size Guild League strategy maps, instructions, roles, and class notes
+- `guild-league-party-list.html` - Live Main League and Sub League party list
 - `siege.html` - Siege preparation board
 - `contact.html` - Guild leadership contacts
 

@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#07080c" />
-  <meta name="description" content="GodTierPH Guild League strategy for Ragnarok: The New World." />
-  <title>GodTierPH | Guild League</title>
+  <meta name="description" content="GodTierPH Guild League strategy steps for Ragnarok: The New World." />
+  <title>GodTierPH | Guild League Strategy</title>
   <link rel="icon" type="image/png" href="assets/godtierph-icon.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -29,7 +29,7 @@
       <div class="nav-group">
         <a class="active" href="/guild-league">Guild League</a>
         <div class="submenu" aria-label="Guild League submenu">
-          <a href="/guild-league-strategy">Strategy</a>
+          <a class="active" href="/guild-league-strategy">Strategy</a>
           <a href="/guild-league-party-list">Party List</a>
         </div>
       </div>
@@ -40,72 +40,16 @@
 
   <main>
     <section class="page-hero section">
-      <p class="eyebrow">GUILD LEAGUE - NEXT WEEK PLAN</p>
-      <h1>Control MID. Rotate. Regroup. Win.</h1>
-      <p class="hero-text">Read your role and follow the steps carefully. Team 1 anchors TOP, MID, and BOTTOM while Team 2 rotates on command.</p>
+      <p class="eyebrow">GUILD LEAGUE STRATEGY</p>
+      <h1>Push MID, reset, rotate.</h1>
+      <p class="hero-text">Use this page during command calls. The maps show each step first, with the written instruction directly below.</p>
       <div class="hero-actions">
-        <a class="btn primary" href="/guild-league-strategy">Strategy Steps</a>
+        <a class="btn primary" href="#strategy-steps">Strategy Steps</a>
         <a class="btn secondary" href="/guild-league-party-list">Party List</a>
       </div>
     </section>
 
-    <section class="section tight">
-      <div class="quick-grid">
-        <a class="quick-link" href="/guild-league-strategy"><strong>Strategy</strong><span>Full-size maps, written instructions, roles, and class notes</span></a>
-        <a class="quick-link" href="/guild-league-party-list"><strong>Party List</strong><span>Main League and Sub League live roster from the published sheet</span></a>
-      </div>
-    </section>
-
-    <section id="map" class="section tight">
-      <div class="section-title">
-        <p class="eyebrow">MAP READ</p>
-        <h2>Use the correct side plan.</h2>
-        <p>We may spawn as blue or red. The plan is the same: MID is the reset point, side parties hold, and Team 2 rotates to break towers.</p>
-      </div>
-      <div class="map-grid">
-        <article class="map-panel">
-          <div class="map-header">
-            <div>
-              <p class="eyebrow">BLUE SIDE</p>
-              <h3>Our side starts left.</h3>
-            </div>
-            <span class="status-pill blue-pill">Blue team</span>
-          </div>
-          <figure class="battle-map side-blue">
-            <img src="assets/guild-league-map-blue.png" alt="Blue side Guild League map view with our side on the left and enemy side on the right." />
-            <span class="map-tag tag-top">TOP HOLD</span>
-            <span class="map-tag tag-mid">MID REGROUP</span>
-            <span class="map-tag tag-bottom">BOTTOM HOLD</span>
-            <span class="map-tag tag-us">OUR SIDE</span>
-            <span class="map-tag tag-enemy">ENEMY SIDE</span>
-            <span class="map-route route-bottom">TEAM 2 TO BOTTOM</span>
-            <span class="map-route route-top">TEAM 2 TO TOP</span>
-          </figure>
-        </article>
-
-        <article class="map-panel">
-          <div class="map-header">
-            <div>
-              <p class="eyebrow">RED SIDE</p>
-              <h3>Mirrored command view.</h3>
-            </div>
-            <span class="status-pill red-pill">Red team</span>
-          </div>
-          <figure class="battle-map side-red">
-            <img src="assets/guild-league-map-red.png" alt="Red side Guild League map view mirrored so our side appears on the left and enemy side appears on the right." />
-            <span class="map-tag tag-top">TOP HOLD</span>
-            <span class="map-tag tag-mid">MID REGROUP</span>
-            <span class="map-tag tag-bottom">BOTTOM HOLD</span>
-            <span class="map-tag tag-us">OUR SIDE</span>
-            <span class="map-tag tag-enemy">ENEMY SIDE</span>
-            <span class="map-route route-bottom">TEAM 2 TO BOTTOM</span>
-            <span class="map-route route-top">TEAM 2 TO TOP</span>
-          </figure>
-        </article>
-      </div>
-    </section>
-
-    <section id="strategy" class="section">
+    <section id="strategy" class="section tight">
       <div class="section-title">
         <p class="eyebrow">TEAM SETUP</p>
         <h2>Read your role first.</h2>
@@ -134,29 +78,7 @@
       </div>
     </section>
 
-    <section id="party-list" class="section tight">
-      <div class="section-title">
-        <p class="eyebrow">PARTY LIST</p>
-        <h2>Live roster, styled for the site.</h2>
-        <p>This pulls from your published Google Sheet and redraws the party cards automatically when the sheet updates.</p>
-      </div>
-      <div class="sheet-panel">
-        <div class="league-tabs" role="tablist" aria-label="Party list league selector">
-          <button class="league-tab active" type="button" data-league="main" role="tab" aria-selected="true">Main League</button>
-          <button class="league-tab" type="button" data-league="sub" role="tab" aria-selected="false">Sub League</button>
-        </div>
-        <div class="sheet-actions">
-          <a class="btn primary" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pubhtml" target="_blank" rel="noopener">Open Party List</a>
-          <button class="btn secondary" type="button" id="refreshPartyList">Refresh List</button>
-          <span class="status-pill" id="partyListStatus">Loading roster</span>
-        </div>
-        <div class="party-board" id="partyList" aria-live="polite">
-          <div class="loading-row">Loading party list from Google Sheets...</div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section tight strategy-steps-section">
+    <section id="strategy-steps" class="section tight strategy-steps-section">
       <div class="section-title">
         <p class="eyebrow">STRATEGY STEPS</p>
         <h2>Follow the order.</h2>
@@ -168,56 +90,95 @@
           <figure class="step-figure">
             <img src="assets/strategy/step-1-starting-positions.png" alt="Step 1 starting positions map showing Team 1 Party 1 at top, Team 1 Parties 2 to 7 at mid, Team 1 Party 8 at bottom, and Team 2 Parties 1 to 4 starting mid." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>Team 1 Party 1 stays TOP.</li><li>Team 1 Party 8 stays BOTTOM.</li><li>Team 1 Parties 2-7 stay MID.</li><li>Team 2 Parties 1-4 also start MID.</li></ul>
+          <ul>
+            <li>Team 1 Party 1 stays TOP.</li>
+            <li>Team 1 Party 8 stays BOTTOM.</li>
+            <li>Team 1 Parties 2-7 stay MID.</li>
+            <li>Team 2 Parties 1-4 also start MID.</li>
+          </ul>
         </article>
+
         <article class="step-card">
           <span class="step-no">2</span>
           <h3>First MID Push</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-2-first-mid-push.png" alt="Step 2 first mid push map showing the mid group pushing together to destroy the first and second enemy mid towers." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>Everyone assigned to MID pushes together.</li><li>Destroy the enemy's 1st MID tower.</li><li>Continue and destroy the 2nd MID tower.</li></ul>
+          <ul>
+            <li>Everyone assigned to MID pushes together.</li>
+            <li>Destroy the enemy's 1st MID tower.</li>
+            <li>Continue and destroy the 2nd MID tower.</li>
+          </ul>
         </article>
+
         <article class="step-card danger">
           <span class="step-no">3</span>
           <h3>Do Not Push 3rd MID Tower</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-3-fall-back-defend.png" alt="Step 3 fall back and defend map showing the team stopping after the second mid tower and falling back to defend." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>After destroying the 2nd tower, stop pushing.</li><li>Do NOT attack the 3rd MID tower.</li><li>Fall back to our 1st MID tower.</li><li>Let the enemy advance toward us.</li><li>Defend and wipe their players at MID.</li></ul>
+          <ul>
+            <li>After destroying the 2nd tower, stop pushing.</li>
+            <li>Do NOT attack the 3rd MID tower.</li>
+            <li>Fall back to our 1st MID tower.</li>
+            <li>Let the enemy advance toward us.</li>
+            <li>Defend and wipe their players at MID.</li>
+          </ul>
         </article>
+
         <article class="step-card">
           <span class="step-no">4</span>
           <h3>Team 2 Rotates Bottom</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-4-team2-bottom.png" alt="Step 4 map showing Team 2 rotating bottom to help Team 1 Party 8 destroy the bottom tower." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>Team 1 continues holding TOP, MID, and BOTTOM.</li><li>Team 2 Parties 1-4 rotate to BOTTOM.</li><li>Help Team 1 Party 8 push and destroy the enemy BOTTOM tower.</li><li>Team 1 Party 8 must remain at BOTTOM.</li></ul>
+          <ul>
+            <li>Team 1 continues holding TOP, MID, and BOTTOM.</li>
+            <li>Team 2 Parties 1-4 rotate to BOTTOM.</li>
+            <li>Help Team 1 Party 8 push and destroy the enemy BOTTOM tower.</li>
+            <li>Team 1 Party 8 must remain at BOTTOM.</li>
+          </ul>
         </article>
+
         <article class="step-card">
           <span class="step-no">5</span>
           <h3>Team 2 Returns MID</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-5-return-mid.png" alt="Step 5 map showing Team 2 returning to mid after the bottom tower falls and regrouping with the mid team." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>Once the BOTTOM tower is destroyed, Team 2 immediately returns to MID.</li><li>Help Team 1 Parties 2-7 clear the enemy players.</li><li>Regroup before the next rotation.</li></ul>
+          <ul>
+            <li>Once the BOTTOM tower is destroyed, Team 2 immediately returns to MID.</li>
+            <li>Help Team 1 Parties 2-7 clear the enemy players.</li>
+            <li>Regroup before the next rotation.</li>
+          </ul>
         </article>
+
         <article class="step-card">
           <span class="step-no">6</span>
           <h3>Team 2 Rotates Top</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-6-team2-top.png" alt="Step 6 map showing Team 2 rotating top to help Team 1 Party 1 destroy the top tower." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>Once MID is clear, Team 2 Parties 1-4 rotate to TOP.</li><li>Help Team 1 Party 1 push and destroy the enemy TOP tower.</li><li>Team 1 Party 1 must remain at TOP.</li></ul>
+          <ul>
+            <li>Once MID is clear, Team 2 Parties 1-4 rotate to TOP.</li>
+            <li>Help Team 1 Party 1 push and destroy the enemy TOP tower.</li>
+            <li>Team 1 Party 1 must remain at TOP.</li>
+          </ul>
         </article>
+
         <article class="step-card">
           <span class="step-no">7</span>
           <h3>Return To MID Again</h3>
           <figure class="step-figure">
             <img src="assets/strategy/step-7-return-mid-again.png" alt="Step 7 map showing Team 2 returning to mid after the top tower falls and regrouping for the next rotation." loading="lazy" decoding="async" />
           </figure>
-          <ul><li>After destroying the TOP tower, Team 2 immediately returns to MID.</li><li>Clear the enemy team again.</li><li>Regroup and prepare for the next rotation.</li></ul>
+          <ul>
+            <li>After destroying the TOP tower, Team 2 immediately returns to MID.</li>
+            <li>Clear the enemy team again.</li>
+            <li>Regroup and prepare for the next rotation.</li>
+          </ul>
         </article>
+
         <article class="step-card purple-step">
           <span class="step-no">8</span>
           <h3>Repeat Rotation</h3>
@@ -225,7 +186,10 @@
             <img src="assets/strategy/step-8-repeat-rotation.png" alt="Step 8 repeat rotation map showing the MID to BOTTOM to MID to TOP to MID loop." loading="lazy" decoding="async" />
           </figure>
           <p class="rotation">MID -> BOTTOM -> MID -> TOP -> MID</p>
-          <ul><li>Keep repeating this rotation.</li><li>Continue until we destroy all of their towers.</li></ul>
+          <ul>
+            <li>Keep repeating this rotation.</li>
+            <li>Continue until we destroy all of their towers.</li>
+          </ul>
         </article>
       </div>
     </section>

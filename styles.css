@@ -56,7 +56,7 @@ h3{font-size:1.18rem;letter-spacing:0}
 .feature-grid,.setup-grid,.steps,.class-grid,.reminders,.map-grid,.contact-grid,.quick-grid{display:grid;gap:16px}
 .three{grid-template-columns:repeat(3,1fr)}
 .setup-grid{grid-template-columns:repeat(4,1fr)}
-.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+.steps{grid-template-columns:1fr;gap:28px}
 .class-grid,.map-grid{grid-template-columns:repeat(2,1fr)}
 .reminders{grid-template-columns:repeat(3,1fr)}
 .quick-grid{grid-template-columns:repeat(2,1fr)}
@@ -97,17 +97,21 @@ h3{font-size:1.18rem;letter-spacing:0}
 .tag-enemy{top:47%;right:5%;color:#ffaaa3}
 .route-bottom{top:64%;left:38%;border-color:rgba(255,105,93,.5)}
 .route-top{top:33%;left:38%;border-color:rgba(78,168,255,.5)}
-.step-card{min-height:0;display:grid;align-content:start;gap:14px}
-.step-no{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
+.strategy-steps-section{width:min(1600px,calc(100% - 36px))}
+.step-card{min-height:0;display:grid;align-content:start;gap:14px;overflow:hidden;padding:0}
+.step-no{display:grid;place-items:center;width:42px;height:42px;margin:28px 30px 0;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
 .step-card h3,.step-card ul,.step-card p{margin:0}
-.step-figure{margin:0;border:1px solid #303946;border-radius:8px;overflow:hidden;background:#0f141b}
+.step-card h3{padding:0 30px;font-size:clamp(1.45rem,2vw,2.2rem)}
+.step-figure{order:-1;margin:0;border:0;border-bottom:1px solid #303946;overflow:hidden;background:#0f141b}
 .step-figure img{width:100%;aspect-ratio:16/9;object-fit:cover}
 .danger{border-color:rgba(255,105,93,.55)}
 .danger .step-no{background:#8e312b;border-color:#ff8277}
 .purple-step{border-color:rgba(177,124,255,.55)}
 .purple-step .step-no{background:#5c3a8f;border-color:#c2a1ff}
-.step-card ul,.class-card ul{margin-bottom:0;padding-left:18px}
-.rotation{color:#d6b9ff;font-weight:950}
+.step-card ul{margin:0 30px 30px;padding-left:24px;font-size:clamp(1.02rem,1.15vw,1.25rem);line-height:1.75}
+.step-card li{margin:5px 0}
+.class-card ul{margin-bottom:0;padding-left:18px}
+.rotation{margin:0 30px;color:#d6b9ff;font-size:clamp(1.05rem,1.2vw,1.3rem);font-weight:950}
 .reminders div{padding:18px;border:1px solid #303946;border-radius:8px;background:#11161d}
 .reminders strong{display:block;margin-bottom:5px;color:#f5f0e8}
 .reminders span{color:#bfb5a8}
@@ -131,15 +135,15 @@ h3{font-size:1.18rem;letter-spacing:0}
 .party-members{display:grid;gap:8px}
 .party-member{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;border:1px solid #2b333f;border-radius:8px;background:#0e131a;padding:9px 10px}
 .party-member.leader{border-color:rgba(242,193,91,.48);background:linear-gradient(135deg,rgba(242,193,91,.14),rgba(14,19,26,.98))}
-.member-name{min-width:0;overflow-wrap:anywhere;font-weight:850;color:#f5f0e8}
-.member-job{max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #3a4552;border-radius:999px;padding:4px 8px;color:#cabfb1;font-size:.72rem;font-weight:850}
+.member-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.88rem;font-weight:650;color:#f5f0e8}
+.member-job{max-width:124px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border:1px solid #3a4552;border-radius:999px;padding:4px 7px;color:#cabfb1;font-size:.68rem;font-weight:760}
 .loading-row,.empty-row{border:1px dashed #3a4552;border-radius:8px;padding:20px;color:#cabfb1;background:#0e131a}
 .error-row{border:1px solid rgba(255,105,93,.55);border-radius:8px;padding:20px;color:#ffaaa3;background:rgba(255,105,93,.08)}
 footer{display:flex;align-items:center;gap:12px;border-top:1px solid rgba(242,193,91,.18);padding:24px clamp(18px,4vw,56px);background:#07080c;color:#d9d0c3}
 footer img{width:42px;height:42px;border-radius:50%}
 @media(max-width:1050px){
   .hero,.split-section,.event-row{grid-template-columns:1fr}
-  .setup-grid,.steps{grid-template-columns:repeat(2,1fr)}
+  .setup-grid{grid-template-columns:repeat(2,1fr)}
   .party-grid{grid-template-columns:repeat(2,1fr)}
   .three,.contact-grid,.reminders{grid-template-columns:repeat(2,1fr)}
 }
