@@ -285,3 +285,159 @@ leagueTabs.forEach((tab) => {
 refreshPartyList?.addEventListener('click', loadPartyList);
 loadPartyList();
 setInterval(loadPartyList, 5 * 60 * 1000);
+
+(function initStormIntro() {
+  const seenKey = 'godtierphStormIntroSeen';
+  const thunderKey = 'godtierphThunderPlayed';
+  const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+
+  function getSessionFlag(key) {
+    try {
+      return sessionStorage.getItem(key) === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function setSessionFlag(key) {
+    try {
+      sessionStorage.setItem(key, 'true');
+    } catch (error) {
+      // Private browsing can block sessionStorage; keep the effect graceful.
+    }
+  }
+
+  function createBolt(left, delay) {
+    const bolt = document.createElement('div');
+    bolt.className = 'storm-bolt';
+    bolt.style.setProperty('--bolt-left', left);
+    bolt.style.setProperty('--bolt-delay', delay);
+
+    for (let i = 0; i < 5; i += 1) {
+      const segment = document.createElement('span');
+      segment.style.setProperty('--segment-index', i);
+      bolt.append(segment);
+    }
+
+    return bolt;
+  }
+
+  function runLightning() {
+    if (motionQuery?.matches || getSessionFlag(seenKey)) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'storm-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.append(createBolt('72%', '0s'));
+    overlay.append(createBolt('36%', '.34s'));
+    document.body.append(overlay);
+    setSessionFlag(seenKey);
+
+    window.setTimeout(() => overlay.remove(), 2300);
+  }
+
+  function buildNoiseBuffer(context, duration) {
+    const sampleCount = Math.floor(context.sampleRate * duration);
+    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+
+    for (let i = 0; i < sampleCount; i += 1) {
+      const progress = i / sampleCount;
+      const envelope = Math.pow(1 - progress, 2.4);
+      last = (last * 0.86) + ((Math.random() * 2 - 1) * 0.14);
+      data[i] = last * envelope;
+    }
+
+    return buffer;
+  }
+
+  function playThunder() {
+    if (!AudioContextCtor || getSessionFlag(thunderKey)) return Promise.resolve(false);
+
+    const context = new AudioContextCtor();
+    const startSound = () => {
+      const now = context.currentTime;
+      const master = context.createGain();
+      const lowpass = context.createBiquadFilter();
+      const rumble = context.createOscillator();
+      const rumbleGain = context.createGain();
+      const noise = context.createBufferSource();
+
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.exponentialRampToValueAtTime(0.42, now + 0.08);
+      master.gain.exponentialRampToValueAtTime(0.0001, now + 2.35);
+
+      lowpass.type = 'lowpass';
+      lowpass.frequency.setValueAtTime(520, now);
+      lowpass.frequency.exponentialRampToValueAtTime(85, now + 2.1);
+      lowpass.Q.setValueAtTime(0.8, now);
+
+      noise.buffer = buildNoiseBuffer(context, 2.45);
+      noise.connect(lowpass);
+      lowpass.connect(master);
+
+      rumble.type = 'sine';
+      rumble.frequency.setValueAtTime(58, now);
+      rumble.frequency.exponentialRampToValueAtTime(31, now + 2.2);
+      rumbleGain.gain.setValueAtTime(0.0001, now);
+      rumbleGain.gain.exponentialRampToValueAtTime(0.28, now + 0.16);
+      rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
+      rumble.connect(rumbleGain);
+      rumbleGain.connect(master);
+
+      master.connect(context.destination);
+      noise.start(now);
+      noise.stop(now + 2.45);
+      rumble.start(now);
+      rumble.stop(now + 2.25);
+      setSessionFlag(thunderKey);
+      window.setTimeout(() => context.close?.(), 2800);
+      return true;
+    };
+
+    if (context.state === 'running') return Promise.resolve(startSound());
+
+    return context.resume().then(() => {
+      if (context.state !== 'running') throw new Error('Audio is blocked');
+      return startSound();
+    });
+  }
+
+  function armGestureFallback() {
+    const options = { once: true, passive: true };
+    const playAfterGesture = () => {
+      playThunder().catch(() => {});
+    };
+
+    document.addEventListener('pointerdown', playAfterGesture, options);
+    document.addEventListener('touchstart', playAfterGesture, options);
+    document.addEventListener('keydown', playAfterGesture, { once: true });
+  }
+
+  function startStorm() {
+    runLightning();
+    if (getSessionFlag(thunderKey)) return;
+
+    window.setTimeout(() => {
+      const thunderAttempt = playThunder();
+      const blockedTimer = window.setTimeout(armGestureFallback, 450);
+      thunderAttempt
+        .then((played) => {
+          window.clearTimeout(blockedTimer);
+          if (!played) armGestureFallback();
+        })
+        .catch(() => {
+          window.clearTimeout(blockedTimer);
+          armGestureFallback();
+        });
+    }, 180);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startStorm, { once: true });
+  } else {
+    startStorm();
+  }
+}());
