@@ -268,11 +268,11 @@ body.modal-open{overflow:hidden}
 .party-lookup-modal[hidden]{display:none!important}
 .party-lookup-modal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:22px}
 .party-lookup-backdrop{position:absolute;inset:0;border:0;background:rgba(3,6,10,.76);backdrop-filter:blur(8px);cursor:pointer}
-.party-lookup-card{position:relative;z-index:1;width:min(860px,100%);max-height:min(760px,calc(100vh - 44px));overflow:auto;border:1px solid rgba(86,182,255,.38);border-radius:8px;background:linear-gradient(180deg,rgba(19,27,37,.98),rgba(8,12,18,.98));box-shadow:0 28px 80px rgba(0,0,0,.62),0 0 34px rgba(78,168,255,.16);padding:26px;outline:none}
-.party-lookup-close{position:absolute;top:-14px;right:-10px;min-height:36px;border:1px solid #3a4552;border-radius:8px;background:#111821;color:#f5f0e8;padding:7px 10px;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer}
+.party-lookup-card{position:relative;z-index:1;width:min(860px,100%);max-height:min(760px,calc(100vh - 44px));overflow-x:hidden;overflow-y:auto;border:1px solid rgba(86,182,255,.38);border-radius:8px;background:linear-gradient(180deg,rgba(19,27,37,.98),rgba(8,12,18,.98));box-shadow:0 28px 80px rgba(0,0,0,.62),0 0 34px rgba(78,168,255,.16);padding:26px;outline:none}
+.party-lookup-close{position:absolute;top:12px;right:12px;z-index:2;min-height:34px;border:1px solid #3a4552;border-radius:8px;background:#111821;color:#f5f0e8;padding:6px 10px;font:inherit;font-size:.82rem;font-weight:850;cursor:pointer}
 .party-lookup-close:hover,.party-lookup-close:focus-visible{border-color:#56b6ff;color:#9fe8ff;outline:none}
 .party-lookup-card h2{margin-right:76px}
-.party-lookup-results{display:grid;gap:14px}
+.party-lookup-results{display:grid;gap:14px;padding-top:28px}
 .lookup-result-card{border:1px solid #303946;border-radius:8px;background:#0e131a;padding:18px}
 .lookup-result-header{display:flex;justify-content:space-between;align-items:start;gap:14px;margin-bottom:14px}
 .lookup-result-header h3{margin:0;font-size:1.45rem;word-break:break-word}
@@ -403,7 +403,8 @@ footer img{width:42px;height:42px;border-radius:50%}
   .party-lookup-modal{padding:12px}
   .party-lookup-card{max-height:calc(100vh - 24px);padding:20px}
   .party-lookup-card h2{margin-right:0;font-size:2rem}
-  .party-lookup-close{top:-20px;right:-4px;min-height:34px;margin-bottom:0;padding:6px 9px}
+  .party-lookup-close{top:8px;right:8px;min-height:32px;padding:5px 8px}
+  .party-lookup-results{padding-top:26px}
   .lookup-result-header{display:grid}
   .lookup-details{grid-template-columns:1fr}
   .lookup-member-row{grid-template-columns:1fr}
