@@ -1,9 +1,52 @@
 const btn = document.getElementById('menuBtn');
 const nav = document.getElementById('mainNav');
+const navGroups = nav ? Array.from(nav.querySelectorAll('.nav-group')) : [];
+const hoverMenuQuery = window.matchMedia?.('(hover: hover) and (pointer: fine)');
+
+function getNavGroupTrigger(group) {
+  return Array.from(group.children).find((child) => child.matches('a'));
+}
+
+function setNavGroupOpen(group, open) {
+  group.classList.toggle('open', open);
+  getNavGroupTrigger(group)?.setAttribute('aria-expanded', String(open));
+}
+
+function closeNavGroups(except = null) {
+  navGroups.forEach((group) => {
+    if (group !== except) setNavGroupOpen(group, false);
+  });
+}
 
 btn?.addEventListener('click', () => {
   const open = nav.classList.toggle('open');
   btn.setAttribute('aria-expanded', String(open));
+});
+
+navGroups.forEach((group) => {
+  let closeTimer;
+
+  group.addEventListener('mouseenter', () => {
+    if (!hoverMenuQuery?.matches) return;
+    clearTimeout(closeTimer);
+    closeNavGroups(group);
+    setNavGroupOpen(group, true);
+  });
+
+  group.addEventListener('mouseleave', () => {
+    if (!hoverMenuQuery?.matches) return;
+    clearTimeout(closeTimer);
+    closeTimer = setTimeout(() => setNavGroupOpen(group, false), 180);
+  });
+
+  group.addEventListener('focusin', () => {
+    closeNavGroups(group);
+    setNavGroupOpen(group, true);
+  });
+
+  group.addEventListener('focusout', (event) => {
+    if (!group.contains(event.relatedTarget)) setNavGroupOpen(group, false);
+  });
 });
 
 nav?.querySelectorAll('a').forEach((link) => {
@@ -14,15 +57,12 @@ nav?.querySelectorAll('a').forEach((link) => {
 
     if (isSubmenuTrigger) {
       event.preventDefault();
-      nav.querySelectorAll('.nav-group.open').forEach((group) => {
-        if (group !== navGroup) group.classList.remove('open');
-      });
-      navGroup.classList.toggle('open');
-      link.setAttribute('aria-expanded', String(navGroup.classList.contains('open')));
+      closeNavGroups(navGroup);
+      setNavGroupOpen(navGroup, !navGroup.classList.contains('open'));
       return;
     }
 
-    nav?.querySelectorAll('.nav-group.open').forEach((group) => group.classList.remove('open'));
+    closeNavGroups();
     nav.classList.remove('open');
     btn?.setAttribute('aria-expanded', 'false');
   });
@@ -30,7 +70,7 @@ nav?.querySelectorAll('a').forEach((link) => {
 
 document.addEventListener('click', (event) => {
   if (!nav?.contains(event.target)) {
-    nav?.querySelectorAll('.nav-group.open').forEach((group) => group.classList.remove('open'));
+    closeNavGroups();
   }
 });
 
