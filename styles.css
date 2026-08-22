@@ -52,7 +52,7 @@ h3{font-size:1.18rem;letter-spacing:0}
 .feature-grid,.setup-grid,.steps,.class-grid,.reminders,.map-grid,.contact-grid,.quick-grid{display:grid;gap:16px}
 .three{grid-template-columns:repeat(3,1fr)}
 .setup-grid{grid-template-columns:repeat(4,1fr)}
-.steps{grid-template-columns:repeat(4,1fr)}
+.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
 .class-grid,.map-grid{grid-template-columns:repeat(2,1fr)}
 .reminders{grid-template-columns:repeat(3,1fr)}
 .quick-grid{grid-template-columns:repeat(2,1fr)}
@@ -93,8 +93,11 @@ h3{font-size:1.18rem;letter-spacing:0}
 .tag-enemy{top:47%;right:5%;color:#ffaaa3}
 .route-bottom{top:64%;left:38%;border-color:rgba(255,105,93,.5)}
 .route-top{top:33%;left:38%;border-color:rgba(78,168,255,.5)}
-.step-card{min-height:260px}
-.step-no{display:grid;place-items:center;width:38px;height:38px;margin-bottom:16px;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
+.step-card{min-height:0;display:grid;align-content:start;gap:14px}
+.step-no{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;border:1px solid #5caeff;background:#1d5688;font-weight:950}
+.step-card h3,.step-card ul,.step-card p{margin:0}
+.step-figure{margin:0;border:1px solid #303946;border-radius:8px;overflow:hidden;background:#0f141b}
+.step-figure img{width:100%;aspect-ratio:16/9;object-fit:cover}
 .danger{border-color:rgba(255,105,93,.55)}
 .danger .step-no{background:#8e312b;border-color:#ff8277}
 .purple-step{border-color:rgba(177,124,255,.55)}

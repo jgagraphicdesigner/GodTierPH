@@ -11,30 +11,30 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="index.html" aria-label="GodTierPH home">
+    <a class="brand" href="/" aria-label="GodTierPH home">
       <img src="assets/godtierph-icon.png" alt="GodTierPH guild emblem" class="brand-icon" />
       <span><strong>GODTIERPH</strong><small>Rise Above. Fight As One.</small></span>
     </a>
     <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">Menu</button>
     <nav id="mainNav" class="nav" aria-label="Primary navigation">
-      <a href="index.html">Home</a>
+      <a href="/">Home</a>
       <div class="nav-group">
-        <a href="guild-events.html">Guild Events</a>
+        <a href="/guild-events">Guild Events</a>
         <div class="submenu" aria-label="Guild Events submenu">
-          <a href="weekly-raffles.html">Weekly Raffles</a>
-          <a href="clash-of-gods.html">5v5 Clash of Gods</a>
-          <a href="crown-contribution.html">Crown of Contribution</a>
+          <a href="/weekly-raffles">Weekly Raffles</a>
+          <a href="/clash-of-gods">5v5 Clash of Gods</a>
+          <a href="/crown-contribution">Crown of Contribution</a>
         </div>
       </div>
       <div class="nav-group">
-        <a class="active" href="guild-league.html">Guild League</a>
+        <a class="active" href="/guild-league">Guild League</a>
         <div class="submenu" aria-label="Guild League submenu">
           <a href="#strategy">Strategy</a>
           <a href="#party-list">Party List</a>
         </div>
       </div>
-      <a href="siege.html">Siege</a>
-      <a href="contact.html">Contact</a>
+      <a href="/siege">Siege</a>
+      <a href="/contact">Contact</a>
     </nav>
   </header>
 
@@ -155,14 +155,71 @@
         <h2>Follow the order.</h2>
       </div>
       <div class="steps">
-        <article class="step-card"><span class="step-no">1</span><h3>Starting Position</h3><ul><li>Team 1 Party 1 stays TOP.</li><li>Team 1 Party 8 stays BOTTOM.</li><li>Team 1 Parties 2-7 stay MID.</li><li>Team 2 Parties 1-4 also start MID.</li></ul></article>
-        <article class="step-card"><span class="step-no">2</span><h3>First MID Push</h3><ul><li>Everyone assigned to MID pushes together.</li><li>Destroy the enemy's 1st MID tower.</li><li>Continue and destroy the 2nd MID tower.</li></ul></article>
-        <article class="step-card danger"><span class="step-no">3</span><h3>Do Not Push 3rd MID Tower</h3><ul><li>After destroying the 2nd tower, stop pushing.</li><li>Do NOT attack the 3rd MID tower.</li><li>Fall back to our 1st MID tower.</li><li>Let the enemy advance toward us.</li><li>Defend and wipe their players at MID.</li></ul></article>
-        <article class="step-card"><span class="step-no">4</span><h3>Team 2 Rotates Bottom</h3><ul><li>Team 1 continues holding TOP, MID, and BOTTOM.</li><li>Team 2 Parties 1-4 rotate to BOTTOM.</li><li>Help Team 1 Party 8 push and destroy the enemy BOTTOM tower.</li><li>Team 1 Party 8 must remain at BOTTOM.</li></ul></article>
-        <article class="step-card"><span class="step-no">5</span><h3>Team 2 Returns MID</h3><ul><li>Once the BOTTOM tower is destroyed, Team 2 immediately returns to MID.</li><li>Help Team 1 Parties 2-7 clear the enemy players.</li><li>Regroup before the next rotation.</li></ul></article>
-        <article class="step-card"><span class="step-no">6</span><h3>Team 2 Rotates Top</h3><ul><li>Once MID is clear, Team 2 Parties 1-4 rotate to TOP.</li><li>Help Team 1 Party 1 push and destroy the enemy TOP tower.</li><li>Team 1 Party 1 must remain at TOP.</li></ul></article>
-        <article class="step-card"><span class="step-no">7</span><h3>Return To MID Again</h3><ul><li>After destroying the TOP tower, Team 2 immediately returns to MID.</li><li>Clear the enemy team again.</li><li>Regroup and prepare for the next rotation.</li></ul></article>
-        <article class="step-card purple-step"><span class="step-no">8</span><h3>Repeat Rotation</h3><p class="rotation">MID -> BOTTOM -> MID -> TOP -> MID</p><ul><li>Keep repeating this rotation.</li><li>Continue until we destroy all of their towers.</li></ul></article>
+        <article class="step-card">
+          <span class="step-no">1</span>
+          <h3>Starting Position</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-1-starting-positions.png" alt="Step 1 starting positions map showing Team 1 Party 1 at top, Team 1 Parties 2 to 7 at mid, Team 1 Party 8 at bottom, and Team 2 Parties 1 to 4 starting mid." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>Team 1 Party 1 stays TOP.</li><li>Team 1 Party 8 stays BOTTOM.</li><li>Team 1 Parties 2-7 stay MID.</li><li>Team 2 Parties 1-4 also start MID.</li></ul>
+        </article>
+        <article class="step-card">
+          <span class="step-no">2</span>
+          <h3>First MID Push</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-2-first-mid-push.png" alt="Step 2 first mid push map showing the mid group pushing together to destroy the first and second enemy mid towers." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>Everyone assigned to MID pushes together.</li><li>Destroy the enemy's 1st MID tower.</li><li>Continue and destroy the 2nd MID tower.</li></ul>
+        </article>
+        <article class="step-card danger">
+          <span class="step-no">3</span>
+          <h3>Do Not Push 3rd MID Tower</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-3-fall-back-defend.png" alt="Step 3 fall back and defend map showing the team stopping after the second mid tower and falling back to defend." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>After destroying the 2nd tower, stop pushing.</li><li>Do NOT attack the 3rd MID tower.</li><li>Fall back to our 1st MID tower.</li><li>Let the enemy advance toward us.</li><li>Defend and wipe their players at MID.</li></ul>
+        </article>
+        <article class="step-card">
+          <span class="step-no">4</span>
+          <h3>Team 2 Rotates Bottom</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-4-team2-bottom.png" alt="Step 4 map showing Team 2 rotating bottom to help Team 1 Party 8 destroy the bottom tower." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>Team 1 continues holding TOP, MID, and BOTTOM.</li><li>Team 2 Parties 1-4 rotate to BOTTOM.</li><li>Help Team 1 Party 8 push and destroy the enemy BOTTOM tower.</li><li>Team 1 Party 8 must remain at BOTTOM.</li></ul>
+        </article>
+        <article class="step-card">
+          <span class="step-no">5</span>
+          <h3>Team 2 Returns MID</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-5-return-mid.png" alt="Step 5 map showing Team 2 returning to mid after the bottom tower falls and regrouping with the mid team." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>Once the BOTTOM tower is destroyed, Team 2 immediately returns to MID.</li><li>Help Team 1 Parties 2-7 clear the enemy players.</li><li>Regroup before the next rotation.</li></ul>
+        </article>
+        <article class="step-card">
+          <span class="step-no">6</span>
+          <h3>Team 2 Rotates Top</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-6-team2-top.png" alt="Step 6 map showing Team 2 rotating top to help Team 1 Party 1 destroy the top tower." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>Once MID is clear, Team 2 Parties 1-4 rotate to TOP.</li><li>Help Team 1 Party 1 push and destroy the enemy TOP tower.</li><li>Team 1 Party 1 must remain at TOP.</li></ul>
+        </article>
+        <article class="step-card">
+          <span class="step-no">7</span>
+          <h3>Return To MID Again</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-7-return-mid-again.png" alt="Step 7 map showing Team 2 returning to mid after the top tower falls and regrouping for the next rotation." loading="lazy" decoding="async" />
+          </figure>
+          <ul><li>After destroying the TOP tower, Team 2 immediately returns to MID.</li><li>Clear the enemy team again.</li><li>Regroup and prepare for the next rotation.</li></ul>
+        </article>
+        <article class="step-card purple-step">
+          <span class="step-no">8</span>
+          <h3>Repeat Rotation</h3>
+          <figure class="step-figure">
+            <img src="assets/strategy/step-8-repeat-rotation.png" alt="Step 8 repeat rotation map showing the MID to BOTTOM to MID to TOP to MID loop." loading="lazy" decoding="async" />
+          </figure>
+          <p class="rotation">MID -> BOTTOM -> MID -> TOP -> MID</p>
+          <ul><li>Keep repeating this rotation.</li><li>Continue until we destroy all of their towers.</li></ul>
+        </article>
       </div>
     </section>
 
