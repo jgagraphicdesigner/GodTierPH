@@ -113,6 +113,12 @@ h3{font-size:1.18rem;letter-spacing:0}
 .step-card ul{margin:0 30px 30px;padding-left:24px;font-size:clamp(1.02rem,1.15vw,1.25rem);line-height:1.75}
 .step-card li{margin:5px 0}
 .class-card ul{margin-bottom:0;padding-left:18px}
+.build-reference-section{width:min(1600px,calc(100% - 36px))}
+.build-gallery{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+.build-shot{margin:0;overflow:hidden;border:1px solid var(--line);border-radius:8px;background:linear-gradient(180deg,rgba(21,27,35,.96),rgba(12,15,20,.96));box-shadow:var(--shadow)}
+.build-shot-wide{grid-column:1/-1}
+.build-shot img{width:100%;height:auto;background:#0e131a}
+.build-shot figcaption{padding:14px 16px;color:#d5cabe;font-size:1rem;font-weight:760}
 .rotation{margin:0 30px;color:#d6b9ff;font-size:clamp(1.05rem,1.2vw,1.3rem);font-weight:950}
 .reminders div{padding:18px;border:1px solid #303946;border-radius:8px;background:#11161d}
 .reminders strong{display:block;margin-bottom:5px;color:#f5f0e8}
@@ -164,7 +170,8 @@ footer img{width:42px;height:42px;border-radius:50%}
   .home-hero-bg{object-position:62% center}
   h1{font-size:clamp(2.5rem,13vw,4.5rem)}
   .hero-card img{width:130px;height:130px}
-  .feature-grid,.setup-grid,.steps,.class-grid,.map-grid,.contact-grid,.quick-grid,.three,.reminders,.party-grid{grid-template-columns:1fr}
+  .feature-grid,.setup-grid,.steps,.class-grid,.map-grid,.contact-grid,.quick-grid,.three,.reminders,.party-grid,.build-gallery{grid-template-columns:1fr}
+  .build-shot-wide{grid-column:auto}
   .map-tag,.map-route{display:none}
   .sheet-actions{align-items:flex-start;flex-direction:column}
   .sheet-panel iframe{height:460px}
