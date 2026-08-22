@@ -195,7 +195,7 @@ h3{font-size:1.18rem;letter-spacing:0}
 .build-shot-wide{grid-column:1/-1}
 .build-shot img{width:100%;height:auto;background:#0e131a}
 .build-shot figcaption{padding:14px 16px;color:#d5cabe;font-size:1rem;font-weight:760}
-.rotation{margin:0 30px;color:#d6b9ff;font-size:clamp(1.05rem,1.2vw,1.3rem);font-weight:950}
+.step-card .rotation{margin:0 30px 0 54px;max-width:calc(100% - 84px);color:#d6b9ff;font-size:clamp(1.05rem,1.2vw,1.3rem);font-weight:950;line-height:1.35;overflow-wrap:break-word}
 .reminders div{padding:18px;border:1px solid #303946;border-radius:8px;background:#11161d}
 .reminders strong{display:block;margin-bottom:5px;color:#f5f0e8}
 .reminders span{color:#bfb5a8}
