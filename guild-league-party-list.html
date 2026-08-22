@@ -7,7 +7,7 @@
   <meta name="description" content="GodTierPH Guild League party list for Ragnarok: The New World." />
   <title>GodTierPH | Guild League Party List</title>
   <link rel="icon" type="image/png" href="assets/godtierph-icon.png" />
-  <link rel="stylesheet" href="styles.css?v=electric-12" />
+  <link rel="stylesheet" href="styles.css?v=electric-13" />
 </head>
 <body>
   <header class="topbar">
@@ -81,8 +81,19 @@
           <button class="league-tab active" type="button" data-league="main" role="tab" aria-selected="true">Main League</button>
           <button class="league-tab" type="button" data-league="sub" role="tab" aria-selected="false">Sub League</button>
         </div>
+        <form class="party-search" id="partySearchForm">
+          <label for="partySearchInput">
+            <span>Find your party</span>
+            <small>Type your character name, choose it from the suggestions, then search.</small>
+          </label>
+          <div class="party-search-row">
+            <input id="partySearchInput" name="partySearchInput" type="search" list="partyNameSuggestions" placeholder="Search player name" autocomplete="off" />
+            <datalist id="partyNameSuggestions"></datalist>
+            <button class="btn primary" type="submit">Search</button>
+          </div>
+          <p class="party-search-help" id="partySearchHelp">Loading names from Main League and Sub League...</p>
+        </form>
         <div class="sheet-actions">
-          <a class="btn primary" href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pubhtml" target="_blank" rel="noopener">Open Party List</a>
           <button class="btn secondary" type="button" id="refreshPartyList">Refresh List</button>
           <span class="status-pill" id="partyListStatus">Loading roster</span>
         </div>
@@ -98,6 +109,16 @@
     <span><strong>GODTIERPH</strong><small>Guild League Party List</small></span>
   </footer>
 
-  <script src="script.js?v=mobile-menu-1"></script>
+  <div class="party-lookup-modal" id="partyLookupModal" role="dialog" aria-modal="true" aria-labelledby="partyLookupTitle" hidden>
+    <button class="party-lookup-backdrop" type="button" data-close-party-lookup aria-label="Close party lookup"></button>
+    <section class="party-lookup-card" tabindex="-1">
+      <button class="party-lookup-close" type="button" data-close-party-lookup aria-label="Close party lookup">Close</button>
+      <p class="eyebrow">PARTY LOOKUP</p>
+      <h2 id="partyLookupTitle">Player assignment</h2>
+      <div class="party-lookup-results" id="partyLookupResults"></div>
+    </section>
+  </div>
+
+  <script src="script.js?v=party-search-1"></script>
 </body>
 </html>

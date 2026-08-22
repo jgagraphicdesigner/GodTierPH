@@ -110,6 +110,14 @@ const partyList = document.getElementById('partyList');
 const partyListStatus = document.getElementById('partyListStatus');
 const refreshPartyList = document.getElementById('refreshPartyList');
 const leagueTabs = document.querySelectorAll('[data-league]');
+const partySearchForm = document.getElementById('partySearchForm');
+const partySearchInput = document.getElementById('partySearchInput');
+const partyNameSuggestions = document.getElementById('partyNameSuggestions');
+const partySearchHelp = document.getElementById('partySearchHelp');
+const partyLookupModal = document.getElementById('partyLookupModal');
+const partyLookupResults = document.getElementById('partyLookupResults');
+const partyLookupTitle = document.getElementById('partyLookupTitle');
+const partyLookupCard = partyLookupModal?.querySelector('.party-lookup-card');
 const rosterCsvUrls = {
   main: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=495643243&single=true&output=csv',
   sub: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=1609318158&single=true&output=csv',
@@ -119,6 +127,9 @@ const leagueLabels = {
   sub: 'Sub League',
 };
 let activeLeague = 'main';
+const rosterCache = {};
+let rosterLookupEntries = [];
+let rosterLoadToken = 0;
 
 function parseCsv(csv) {
   const rows = [];
@@ -194,7 +205,8 @@ function parseRoster(rows) {
 
       if (nextSection) break;
       if (!isBlankRow(memberRow)) {
-        const rowLabel = (memberRow[0] || '').toLowerCase();
+        const rowLabelText = memberRow[0] || '';
+        const rowLabel = rowLabelText.toLowerCase();
         parties.forEach((party) => {
           const name = memberRow[party.nameColumn] || '';
           const job = memberRow[party.jobColumn] || '';
@@ -202,7 +214,10 @@ function parseRoster(rows) {
             party.members.push({
               name: name || 'TBA',
               job: job || 'TBA',
-              leader: rowLabel.includes('party leader'),
+              roleLabel: rowLabelText,
+              partyLeader: rowLabel.includes('party leader'),
+              teamLeader: rowLabel.includes('team leader'),
+              leader: rowLabel.includes('party leader') || rowLabel.includes('team leader'),
             });
           }
         });
@@ -268,8 +283,9 @@ function renderRoster(sections) {
       party.members.forEach((member) => {
         const item = document.createElement('div');
         item.className = member.leader ? 'party-member leader' : 'party-member';
+        const leadLabel = member.teamLeader ? 'Team Lead' : 'Party Lead';
         item.append(textNode('span', 'member-name', member.name));
-        item.append(textNode('span', 'member-job', member.leader ? `${member.job} - Lead` : member.job));
+        item.append(textNode('span', 'member-job', member.leader ? `${member.job} - ${leadLabel}` : member.job));
         members.append(item);
       });
       card.append(members);
@@ -281,22 +297,142 @@ function renderRoster(sections) {
   });
 }
 
-async function loadPartyList() {
-  if (!partyList) return;
-  const leagueLabel = leagueLabels[activeLeague] || 'Party List';
-  const rosterCsvUrl = rosterCsvUrls[activeLeague] || rosterCsvUrls.main;
-  partyListStatus.textContent = `Updating ${leagueLabel}`;
+function normalizeSearchValue(value) {
+  return (value || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
 
-  try {
-    const response = await fetch(`${rosterCsvUrl}&cache=${Date.now()}`);
-    if (!response.ok) throw new Error('Roster request failed');
-    const csv = await response.text();
-    const sections = parseRoster(parseCsv(csv));
-    renderRoster(sections);
-    partyListStatus.textContent = `${leagueLabel} updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  } catch (error) {
-    partyList.replaceChildren(textNode('div', 'error-row', 'Could not load the party list. Use the Open Party List button while Google refreshes the published sheet.'));
-    partyListStatus.textContent = 'Roster unavailable';
+function getTeamLabel(sectionName) {
+  const match = String(sectionName).match(/team\s+(\d+)/i);
+  return match ? `Team ${match[1]}` : sectionName;
+}
+
+function getPartyLeader(party) {
+  return party.members.find((member) => member.partyLeader);
+}
+
+function getTeamLeader(section) {
+  const explicitLeader = section.parties
+    .flatMap((party) => party.members.map((member) => ({ party, member })))
+    .find(({ member }) => member.teamLeader);
+
+  if (explicitLeader) {
+    return `${explicitLeader.member.name} (Team Leader)`;
+  }
+
+  const firstPartyLeader = section.parties
+    .map((party) => ({ party, member: getPartyLeader(party) }))
+    .find(({ member }) => member);
+
+  if (firstPartyLeader) {
+    return `${firstPartyLeader.member.name} (${firstPartyLeader.party.name} leader)`;
+  }
+
+  return 'Not listed in sheet';
+}
+
+function buildRosterLookupEntries() {
+  return Object.entries(rosterCache).flatMap(([league, sections]) => {
+    const leagueLabel = leagueLabels[league] || league;
+
+    return sections.flatMap((section) => {
+      const teamLabel = getTeamLabel(section.name);
+      const teamLeader = getTeamLeader(section);
+
+      return section.parties.flatMap((party) => {
+        const partyLeader = getPartyLeader(party);
+        const partyLeaderName = partyLeader?.name || 'Not listed in sheet';
+
+        return party.members
+          .filter((member) => normalizeSearchValue(member.name) && normalizeSearchValue(member.name) !== 'tba')
+          .map((member) => ({
+            name: member.name,
+            job: member.job,
+            league,
+            leagueLabel,
+            team: teamLabel,
+            teamRaw: section.name,
+            teamLeader,
+            party: party.name,
+            partyLeader: partyLeaderName,
+            role: member.teamLeader ? 'Team Leader' : member.partyLeader ? 'Party Leader' : 'Member',
+          }));
+      });
+    });
+  });
+}
+
+function updatePartyLookupOptions() {
+  if (!partySearchForm) return;
+
+  rosterLookupEntries = buildRosterLookupEntries();
+  const names = [...new Set(rosterLookupEntries.map((entry) => entry.name))]
+    .sort((a, b) => a.localeCompare(b));
+
+  partyNameSuggestions?.replaceChildren(...names.map((name) => {
+    const option = document.createElement('option');
+    option.value = name;
+    return option;
+  }));
+
+  if (partySearchInput) partySearchInput.disabled = !names.length;
+  if (partySearchHelp) {
+    partySearchHelp.textContent = names.length
+      ? `${names.length} names loaded from Main League and Sub League.`
+      : 'No names loaded yet. Refresh the roster and try again.';
+  }
+}
+
+async function fetchLeagueRoster(league) {
+  const rosterCsvUrl = rosterCsvUrls[league];
+  const response = await fetch(`${rosterCsvUrl}&cache=${Date.now()}`);
+  if (!response.ok) throw new Error(`${leagueLabels[league]} roster request failed`);
+  const csv = await response.text();
+  return parseRoster(parseCsv(csv));
+}
+
+function renderActiveRoster() {
+  if (!partyList) return;
+  const sections = rosterCache[activeLeague] || [];
+  renderRoster(sections);
+}
+
+async function loadPartyList() {
+  if (!partyList && !partySearchForm) return;
+
+  const currentToken = ++rosterLoadToken;
+  const leagueLabel = leagueLabels[activeLeague] || 'Party List';
+  if (partyListStatus) partyListStatus.textContent = `Updating ${leagueLabel}`;
+
+  const leagueKeys = Object.keys(rosterCsvUrls);
+  const results = await Promise.allSettled(leagueKeys.map(async (league) => ({
+    league,
+    sections: await fetchLeagueRoster(league),
+  })));
+
+  if (currentToken !== rosterLoadToken) return;
+
+  let updatedCount = 0;
+  results.forEach((result) => {
+    if (result.status !== 'fulfilled') return;
+    rosterCache[result.value.league] = result.value.sections;
+    updatedCount += 1;
+  });
+
+  updatePartyLookupOptions();
+
+  if (!updatedCount) {
+    if (partyList) {
+      partyList.replaceChildren(textNode('div', 'error-row', 'Could not load the party list yet. Please refresh again while Google updates the published sheet.'));
+    }
+    if (partyListStatus) partyListStatus.textContent = 'Roster unavailable';
+    if (partySearchHelp) partySearchHelp.textContent = 'Roster search is unavailable right now. Please refresh again in a moment.';
+    return;
+  }
+
+  renderActiveRoster();
+  if (partyListStatus) {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    partyListStatus.textContent = `${leagueLabel} updated ${time}`;
   }
 }
 
@@ -308,15 +444,122 @@ function setActiveLeague(league) {
     tab.classList.toggle('active', isActive);
     tab.setAttribute('aria-selected', String(isActive));
   });
-  loadPartyList();
+  if (rosterCache[activeLeague]) {
+    renderActiveRoster();
+    if (partyListStatus) partyListStatus.textContent = `${leagueLabels[activeLeague]} loaded`;
+  } else {
+    loadPartyList();
+  }
 }
+
+function detailRow(label, value) {
+  const row = document.createElement('div');
+  const term = document.createElement('dt');
+  const detail = document.createElement('dd');
+  term.textContent = label;
+  detail.textContent = value;
+  row.append(term, detail);
+  return row;
+}
+
+function renderLookupMatch(entry) {
+  const card = document.createElement('article');
+  card.className = 'lookup-result-card';
+
+  const header = document.createElement('div');
+  header.className = 'lookup-result-header';
+  const title = textNode('h3', '', entry.name);
+  const job = textNode('span', 'status-pill blue-pill', entry.job);
+  header.append(title, job);
+
+  const details = document.createElement('dl');
+  details.className = 'lookup-details';
+  details.append(
+    detailRow('League', entry.leagueLabel),
+    detailRow('Team', entry.team),
+    detailRow('Party', entry.party),
+    detailRow('Role', entry.role),
+    detailRow('Team Leader', entry.teamLeader),
+    detailRow('Party Leader', entry.partyLeader),
+  );
+
+  card.append(header, details);
+  return card;
+}
+
+function openPartyLookup(query) {
+  if (!partyLookupModal || !partyLookupResults || !partyLookupTitle) return;
+
+  const search = query.trim();
+  if (!search) {
+    if (partySearchHelp) partySearchHelp.textContent = 'Type your character name first.';
+    partySearchInput?.focus();
+    return;
+  }
+
+  if (!rosterLookupEntries.length) {
+    if (partySearchHelp) partySearchHelp.textContent = 'Names are still loading. Try again in a moment.';
+    return;
+  }
+
+  const normalizedSearch = normalizeSearchValue(search);
+  const exactMatches = rosterLookupEntries.filter((entry) => normalizeSearchValue(entry.name) === normalizedSearch);
+  const matches = exactMatches.length
+    ? exactMatches
+    : rosterLookupEntries.filter((entry) => normalizeSearchValue(entry.name).includes(normalizedSearch)).slice(0, 8);
+
+  partyLookupResults.replaceChildren();
+
+  if (!matches.length) {
+    partyLookupTitle.textContent = 'No party assignment found';
+    partyLookupResults.append(textNode('div', 'empty-row', `No roster match found for "${search}". Check the spelling or press Refresh List after the sheet updates.`));
+  } else {
+    partyLookupTitle.textContent = `${matches.length} assignment${matches.length === 1 ? '' : 's'} found`;
+    matches.forEach((entry) => partyLookupResults.append(renderLookupMatch(entry)));
+  }
+
+  partyLookupModal.hidden = false;
+  document.body.classList.add('modal-open');
+  partyLookupCard?.focus();
+}
+
+function closePartyLookup() {
+  if (!partyLookupModal) return;
+  partyLookupModal.hidden = true;
+  document.body.classList.remove('modal-open');
+  partySearchInput?.focus();
+}
+
+partySearchForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  openPartyLookup(partySearchInput?.value || '');
+});
+
+partySearchInput?.addEventListener('change', () => {
+  const value = partySearchInput.value;
+  if (rosterLookupEntries.some((entry) => normalizeSearchValue(entry.name) === normalizeSearchValue(value))) {
+    openPartyLookup(value);
+  }
+});
+
+partyLookupModal?.querySelectorAll('[data-close-party-lookup]').forEach((control) => {
+  control.addEventListener('click', closePartyLookup);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && partyLookupModal && !partyLookupModal.hidden) {
+    closePartyLookup();
+  }
+});
 
 leagueTabs.forEach((tab) => {
   tab.addEventListener('click', () => setActiveLeague(tab.dataset.league));
 });
 refreshPartyList?.addEventListener('click', loadPartyList);
-loadPartyList();
-setInterval(loadPartyList, 5 * 60 * 1000);
+if (partyList || partySearchForm) {
+  loadPartyList();
+  setInterval(loadPartyList, 5 * 60 * 1000);
+}
 
 (function initOnlineUsersWidget() {
   if (document.getElementById('onlineUsersWidget')) return;
