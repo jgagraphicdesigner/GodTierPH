@@ -294,9 +294,8 @@ function renderRoster(sections) {
       party.members.forEach((member) => {
         const item = document.createElement('div');
         item.className = member.leader ? 'party-member leader' : 'party-member';
-        const leadLabel = member.teamLeader ? 'Team Lead' : 'Party Lead';
         item.append(textNode('span', 'member-name', member.name));
-        item.append(textNode('span', 'member-job', member.leader ? `${member.job} - ${leadLabel}` : member.job));
+        item.append(textNode('span', 'member-job', member.leader ? `${member.job} - ${getMemberRole(member)}` : member.job));
         members.append(item);
       });
       card.append(members);
@@ -319,6 +318,12 @@ function getTeamLabel(sectionName) {
 
 function getPartyLeader(party) {
   return party.members.find((member) => member.partyLeader);
+}
+
+function getMemberRole(member) {
+  if (member.teamLeader) return 'Team Leader';
+  if (member.partyLeader) return 'Party Leader';
+  return 'Member';
 }
 
 function getTeamLeader(section) {
@@ -352,6 +357,21 @@ function buildRosterLookupEntries() {
       return section.parties.flatMap((party) => {
         const partyLeader = getPartyLeader(party);
         const partyLeaderName = partyLeader?.name || 'Not listed in sheet';
+        const partyMembers = party.members.map((member) => ({
+          name: member.name,
+          job: member.job,
+          role: getMemberRole(member),
+          leader: member.leader,
+        }));
+        const teamParties = section.parties.map((teamParty) => ({
+          party: teamParty.name,
+          members: teamParty.members.map((member) => ({
+            name: member.name,
+            job: member.job,
+            role: getMemberRole(member),
+            leader: member.leader,
+          })),
+        }));
 
         return party.members
           .filter((member) => normalizeSearchValue(member.name) && normalizeSearchValue(member.name) !== 'tba')
@@ -365,7 +385,9 @@ function buildRosterLookupEntries() {
             teamLeader,
             party: party.name,
             partyLeader: partyLeaderName,
-            role: member.teamLeader ? 'Team Leader' : member.partyLeader ? 'Party Leader' : 'Member',
+            role: getMemberRole(member),
+            partyMembers,
+            teamParties,
           }));
       });
     });
@@ -473,6 +495,70 @@ function detailRow(label, value) {
   return row;
 }
 
+function renderLookupMember(member, selectedName = '') {
+  const row = document.createElement('div');
+  const isSelected = normalizeSearchValue(member.name) === normalizeSearchValue(selectedName);
+  row.className = [
+    'lookup-member-row',
+    member.leader ? 'leader' : '',
+    isSelected ? 'selected' : '',
+  ].filter(Boolean).join(' ');
+  row.append(textNode('span', 'lookup-member-name', member.name));
+
+  const meta = document.createElement('span');
+  meta.className = 'lookup-member-meta';
+  meta.append(textNode('span', 'lookup-member-job', member.job));
+  if (member.role !== 'Member') {
+    meta.append(textNode('span', 'lookup-member-role', member.role));
+  }
+  row.append(meta);
+  return row;
+}
+
+function renderLookupPartyMembers(entry) {
+  const section = document.createElement('section');
+  section.className = 'lookup-members-section';
+  section.append(textNode('h4', '', 'Your Party Members'));
+
+  const list = document.createElement('div');
+  list.className = 'lookup-member-list';
+  entry.partyMembers.forEach((member) => {
+    list.append(renderLookupMember(member, entry.name));
+  });
+  section.append(list);
+  return section;
+}
+
+function renderLookupTeamMembers(entry) {
+  const section = document.createElement('section');
+  section.className = 'lookup-members-section';
+  section.append(textNode('h4', '', 'Whole Team Members'));
+
+  const groups = document.createElement('div');
+  groups.className = 'lookup-team-groups';
+  entry.teamParties.forEach((party) => {
+    const partyGroup = document.createElement('div');
+    partyGroup.className = party.party === entry.party ? 'lookup-member-party active' : 'lookup-member-party';
+
+    const partyHeader = document.createElement('div');
+    partyHeader.className = 'lookup-member-party-header';
+    partyHeader.append(textNode('strong', '', party.party));
+    partyHeader.append(textNode('span', 'status-pill', `${party.members.length} members`));
+    partyGroup.append(partyHeader);
+
+    const members = document.createElement('div');
+    members.className = 'lookup-member-list';
+    party.members.forEach((member) => {
+      members.append(renderLookupMember(member, entry.name));
+    });
+    partyGroup.append(members);
+    groups.append(partyGroup);
+  });
+
+  section.append(groups);
+  return section;
+}
+
 function renderLookupMatch(entry) {
   const card = document.createElement('article');
   card.className = 'lookup-result-card';
@@ -494,7 +580,7 @@ function renderLookupMatch(entry) {
     detailRow('Party Leader', entry.partyLeader),
   );
 
-  card.append(header, details);
+  card.append(header, details, renderLookupPartyMembers(entry), renderLookupTeamMembers(entry));
   return card;
 }
 
