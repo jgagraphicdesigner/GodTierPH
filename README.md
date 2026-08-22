@@ -14,6 +14,7 @@ Responsive static website for GodTierPH.
 - `guild-league-party-list.html` - Live Main League and Sub League party list
 - `guild-league-team-combo.html` - Team combo engage and priority target guide
 - `guides.html` - Guide hub for strategy, siege routes, builds, and event references
+- `media.html` - Media archive for war clips, screenshots, highlights, and guild assets
 - `builds.html` - Builds overview and class build menu
 - `build-*.html` - Individual class build pages
 - `siege.html` - Siege preparation board
