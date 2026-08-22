@@ -132,10 +132,10 @@ h3{font-size:1.18rem;letter-spacing:0}
 .reminders div{padding:18px;border:1px solid #303946;border-radius:8px;background:#11161d}
 .reminders strong{display:block;margin-bottom:5px;color:#f5f0e8}
 .reminders span{color:#bfb5a8}
-.summary-flow{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;overflow:visible;padding-bottom:0}
+.summary-flow{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;width:100%;max-width:100%;overflow:hidden;padding-bottom:0}
 .summary-flow span:nth-child(-n+3){grid-column:span 4}
 .summary-flow span:nth-child(n+4){grid-column:span 3}
-.summary-flow span{border:1px solid #303946;border-radius:8px;background:#11161d;padding:14px;color:#efe7dc;font-weight:850}
+.summary-flow span{min-width:0;border:1px solid #303946;border-radius:8px;background:#11161d;padding:14px;color:#efe7dc;font-weight:850;line-height:1.45;white-space:normal;overflow-wrap:break-word}
 .sheet-panel{padding:18px}
 .league-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
 .league-tab{min-height:42px;border:1px solid #3a4552;border-radius:8px;background:#11161d;color:#d9d0c4;padding:10px 16px;font:inherit;font-weight:900;letter-spacing:.02em;cursor:pointer;transition:background .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
