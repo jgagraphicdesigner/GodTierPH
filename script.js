@@ -74,6 +74,35 @@ document.addEventListener('click', (event) => {
   }
 });
 
+(function initHomeHeroVideo() {
+  const hero = document.querySelector('[data-home-hero]');
+  const video = hero?.querySelector('[data-home-hero-video]');
+
+  if (!hero || !video) return;
+
+  function showStaticHero() {
+    hero.classList.remove('video-ready');
+    hero.classList.add('video-ended');
+    video.pause();
+  }
+
+  video.addEventListener('playing', () => {
+    if (!hero.classList.contains('video-ended')) {
+      hero.classList.add('video-ready');
+    }
+  }, { once: true });
+
+  video.addEventListener('ended', showStaticHero);
+  video.addEventListener('error', () => {
+    hero.classList.add('video-unavailable');
+  }, { once: true });
+
+  const playAttempt = video.play();
+  if (playAttempt?.catch) {
+    playAttempt.catch(() => hero.classList.add('video-unavailable'));
+  }
+}());
+
 const partyList = document.getElementById('partyList');
 const partyListStatus = document.getElementById('partyListStatus');
 const refreshPartyList = document.getElementById('refreshPartyList');
