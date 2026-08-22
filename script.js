@@ -172,6 +172,14 @@ function isBlankRow(row) {
   return row.every((cell) => !cell);
 }
 
+function normalizePartyName(sectionName, partyName, partyIndex) {
+  if (/^team\s+2\s+main/i.test(sectionName)) {
+    return `Party ${partyIndex + 1}`;
+  }
+
+  return partyName;
+}
+
 function parseRoster(rows) {
   const sections = [];
   let index = 0;
@@ -190,8 +198,8 @@ function parseRoster(rows) {
     const partyColumns = header
       .map((cell, column) => ({ cell, column }))
       .filter(({ cell }) => /^party\s+\d+/i.test(cell));
-    const parties = partyColumns.map(({ cell, column }) => ({
-      name: cell,
+    const parties = partyColumns.map(({ cell, column }, partyIndex) => ({
+      name: normalizePartyName(sectionName, cell, partyIndex),
       members: [],
       nameColumn: column,
       jobColumn: column + 1,
