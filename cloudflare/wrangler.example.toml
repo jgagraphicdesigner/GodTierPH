@@ -1,0 +1,7 @@
+name = "godtierph-presence"
+main = "presence-worker.js"
+compatibility_date = "2026-08-22"
+
+[[kv_namespaces]]
+binding = "GODTIERPH_PRESENCE"
+id = "48cf786330ae4df8bcab82103ba3aa91"

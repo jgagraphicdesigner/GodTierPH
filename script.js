@@ -576,7 +576,9 @@ if (partyList || partySearchForm) {
   const sessionKey = 'godtierphPresenceSession';
   const ttl = 18000;
   const heartbeatDelay = 6000;
-  const endpoint = window.GODTIERPH_PRESENCE_ENDPOINT || '';
+  const liveHost = /(^|\.)godtierph\.com$/i.test(window.location.hostname);
+  const defaultEndpoint = liveHost ? 'https://godtierph-presence.godtierph.workers.dev/api/presence' : '';
+  const endpoint = window.GODTIERPH_PRESENCE_ENDPOINT || defaultEndpoint;
 
   function safeSessionId() {
     try {
