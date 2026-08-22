@@ -40,11 +40,13 @@ navGroups.forEach((group) => {
   });
 
   group.addEventListener('focusin', () => {
+    if (!hoverMenuQuery?.matches) return;
     closeNavGroups(group);
     setNavGroupOpen(group, true);
   });
 
   group.addEventListener('focusout', (event) => {
+    if (!hoverMenuQuery?.matches) return;
     if (!group.contains(event.relatedTarget)) setNavGroupOpen(group, false);
   });
 });
@@ -57,8 +59,9 @@ nav?.querySelectorAll('a').forEach((link) => {
 
     if (isSubmenuTrigger) {
       event.preventDefault();
+      const shouldOpen = hoverMenuQuery?.matches || !navGroup.classList.contains('open');
       closeNavGroups(navGroup);
-      setNavGroupOpen(navGroup, !navGroup.classList.contains('open'));
+      setNavGroupOpen(navGroup, shouldOpen);
       return;
     }
 
