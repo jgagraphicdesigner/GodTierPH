@@ -60,6 +60,9 @@ img{display:block;max-width:100%}
 .clash-hero{min-height:clamp(420px,52vw,650px);align-content:end;padding:clamp(72px,7vw,110px) 0 34px}
 .clash-hero:after{background:linear-gradient(180deg,rgba(7,8,12,.05) 0%,rgba(7,8,12,.08) 48%,rgba(7,8,12,.72) 100%)}
 .clash-hero .league-hero-bg{object-position:center center}
+.crown-hero{min-height:clamp(420px,48vw,620px);align-content:end;padding:clamp(72px,7vw,110px) 0 34px}
+.crown-hero:after{background:linear-gradient(180deg,rgba(7,8,12,.04) 0%,rgba(7,8,12,.1) 50%,rgba(7,8,12,.72) 100%)}
+.crown-hero .league-hero-bg{object-position:center center}
 .league-hero > :not(.league-hero-bg){position:relative;z-index:2;margin-left:max(18px,calc((100% - 1220px)/2));margin-right:max(18px,calc((100% - 1220px)/2))}
 .league-hero h1{text-shadow:0 18px 48px rgba(0,0,0,.72)}
 .league-hero .hero-text{max-width:680px;color:#e7ded4;text-shadow:0 8px 28px rgba(0,0,0,.88)}
