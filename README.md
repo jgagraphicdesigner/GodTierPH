@@ -12,6 +12,8 @@ Responsive static website for GodTierPH.
 - `guild-league.html` - Guild League strategy, side maps, live styled party list, roles
 - `guild-league-strategy.html` - Full-size Guild League strategy maps, instructions, roles, and class notes
 - `guild-league-party-list.html` - Live Main League and Sub League party list
+- `builds.html` - Builds overview and class build menu
+- `build-*.html` - Individual class build pages
 - `siege.html` - Siege preparation board
 - `contact.html` - Guild leadership contacts
 
