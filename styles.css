@@ -260,7 +260,9 @@ footer img{width:42px;height:42px;border-radius:50%}
 .recruit-poster-frame img{width:100%;height:auto}
 .recruit-info-section,.recruit-ranking-section{padding-top:44px}
 .recruit-info-section .section-title,.recruit-ranking-card > div:first-child{margin-left:auto;margin-right:auto;text-align:center}
-.recruit-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.recruit-stat-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.recruit-stat-grid .recruit-stat:nth-child(-n+3){grid-column:span 2}
+.recruit-stat-grid .recruit-stat:nth-child(n+4){grid-column:span 1}
 .recruit-stat,.recruit-ranking-card,.recruit-rank-grid article{border:1px solid rgba(86,182,255,.28);border-radius:8px;background:linear-gradient(180deg,rgba(16,24,36,.94),rgba(8,12,18,.96));box-shadow:var(--shadow),0 0 24px rgba(78,168,255,.08)}
 .recruit-stat{min-height:108px;padding:16px;display:grid;align-content:center;gap:7px;text-align:center}
 .recruit-stat span,.recruit-rank-grid span{color:#91cfff;font-size:.72rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
@@ -295,6 +297,8 @@ footer img{width:42px;height:42px;border-radius:50%}
   .setup-grid{grid-template-columns:repeat(2,1fr)}
   .party-grid{grid-template-columns:repeat(2,1fr)}
   .three,.contact-grid,.reminders{grid-template-columns:repeat(2,1fr)}
+  .recruit-stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .recruit-stat-grid .recruit-stat:nth-child(n){grid-column:auto}
   .summary-flow{grid-template-columns:repeat(2,minmax(0,1fr))}
   .summary-flow span:nth-child(n){grid-column:auto}
 }
