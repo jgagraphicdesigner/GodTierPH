@@ -282,12 +282,7 @@ body.modal-open{overflow:hidden}
 .lookup-details dd{margin:0;color:#f5f0e8;font-weight:760;overflow-wrap:anywhere}
 .lookup-members-section{display:grid;gap:10px;margin-top:16px;border:1px solid #26303c;border-radius:8px;background:linear-gradient(180deg,rgba(12,18,27,.98),rgba(9,13,20,.98));padding:14px}
 .lookup-members-section h4{margin:0;color:#f5f0e8;font-size:1rem}
-.lookup-member-list,.lookup-team-groups{display:grid;gap:8px}
-.lookup-team-groups{gap:10px}
-.lookup-member-party{display:grid;gap:9px;border:1px solid #26303c;border-radius:8px;background:#0b1119;padding:10px}
-.lookup-member-party.active{border-color:rgba(86,182,255,.56);box-shadow:0 0 0 1px rgba(86,182,255,.12) inset,0 0 20px rgba(86,182,255,.1)}
-.lookup-member-party-header{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.lookup-member-party-header strong{color:#9fe8ff;font-size:.92rem}
+.lookup-member-list{display:grid;gap:8px}
 .lookup-member-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;border:1px solid #25303c;border-radius:8px;background:#101720;padding:9px 10px}
 .lookup-member-row.leader{border-color:rgba(242,193,91,.44);background:linear-gradient(135deg,rgba(242,193,91,.12),rgba(16,23,32,.98))}
 .lookup-member-row.selected{border-color:rgba(86,182,255,.72);box-shadow:0 0 0 1px rgba(86,182,255,.18) inset,0 0 18px rgba(86,182,255,.12)}

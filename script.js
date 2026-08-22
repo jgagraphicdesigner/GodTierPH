@@ -363,16 +363,6 @@ function buildRosterLookupEntries() {
           role: getMemberRole(member),
           leader: member.leader,
         }));
-        const teamParties = section.parties.map((teamParty) => ({
-          party: teamParty.name,
-          members: teamParty.members.map((member) => ({
-            name: member.name,
-            job: member.job,
-            role: getMemberRole(member),
-            leader: member.leader,
-          })),
-        }));
-
         return party.members
           .filter((member) => normalizeSearchValue(member.name) && normalizeSearchValue(member.name) !== 'tba')
           .map((member) => ({
@@ -387,7 +377,6 @@ function buildRosterLookupEntries() {
             partyLeader: partyLeaderName,
             role: getMemberRole(member),
             partyMembers,
-            teamParties,
           }));
       });
     });
@@ -529,36 +518,6 @@ function renderLookupPartyMembers(entry) {
   return section;
 }
 
-function renderLookupTeamMembers(entry) {
-  const section = document.createElement('section');
-  section.className = 'lookup-members-section';
-  section.append(textNode('h4', '', 'Whole Team Members'));
-
-  const groups = document.createElement('div');
-  groups.className = 'lookup-team-groups';
-  entry.teamParties.forEach((party) => {
-    const partyGroup = document.createElement('div');
-    partyGroup.className = party.party === entry.party ? 'lookup-member-party active' : 'lookup-member-party';
-
-    const partyHeader = document.createElement('div');
-    partyHeader.className = 'lookup-member-party-header';
-    partyHeader.append(textNode('strong', '', party.party));
-    partyHeader.append(textNode('span', 'status-pill', `${party.members.length} members`));
-    partyGroup.append(partyHeader);
-
-    const members = document.createElement('div');
-    members.className = 'lookup-member-list';
-    party.members.forEach((member) => {
-      members.append(renderLookupMember(member, entry.name));
-    });
-    partyGroup.append(members);
-    groups.append(partyGroup);
-  });
-
-  section.append(groups);
-  return section;
-}
-
 function renderLookupMatch(entry) {
   const card = document.createElement('article');
   card.className = 'lookup-result-card';
@@ -580,7 +539,7 @@ function renderLookupMatch(entry) {
     detailRow('Party Leader', entry.partyLeader),
   );
 
-  card.append(header, details, renderLookupPartyMembers(entry), renderLookupTeamMembers(entry));
+  card.append(header, details, renderLookupPartyMembers(entry));
   return card;
 }
 
