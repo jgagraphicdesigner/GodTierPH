@@ -289,6 +289,8 @@ setInterval(loadPartyList, 5 * 60 * 1000);
 (function initStormIntro() {
   const seenKey = 'godtierphStormIntroSeen';
   const thunderKey = 'godtierphThunderPlayed';
+  const homePath = window.location.pathname.replace(/\/index\.html$/i, '/') || '/';
+  const isHomePage = homePath === '/';
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
 
@@ -324,7 +326,7 @@ setInterval(loadPartyList, 5 * 60 * 1000);
   }
 
   function runLightning() {
-    if (motionQuery?.matches || getSessionFlag(seenKey)) return;
+    if (motionQuery?.matches || (!isHomePage && getSessionFlag(seenKey))) return;
 
     const overlay = document.createElement('div');
     overlay.className = 'storm-overlay';
@@ -332,7 +334,7 @@ setInterval(loadPartyList, 5 * 60 * 1000);
     overlay.append(createBolt('72%', '0s'));
     overlay.append(createBolt('36%', '.34s'));
     document.body.append(overlay);
-    setSessionFlag(seenKey);
+    if (!isHomePage) setSessionFlag(seenKey);
 
     window.setTimeout(() => overlay.remove(), 2300);
   }
@@ -354,7 +356,7 @@ setInterval(loadPartyList, 5 * 60 * 1000);
   }
 
   function playThunder() {
-    if (!AudioContextCtor || getSessionFlag(thunderKey)) return Promise.resolve(false);
+    if (!AudioContextCtor || (!isHomePage && getSessionFlag(thunderKey))) return Promise.resolve(false);
 
     const context = new AudioContextCtor();
     const startSound = () => {
@@ -392,7 +394,7 @@ setInterval(loadPartyList, 5 * 60 * 1000);
       noise.stop(now + 2.45);
       rumble.start(now);
       rumble.stop(now + 2.25);
-      setSessionFlag(thunderKey);
+      if (!isHomePage) setSessionFlag(thunderKey);
       window.setTimeout(() => context.close?.(), 2800);
       return true;
     };
@@ -418,7 +420,7 @@ setInterval(loadPartyList, 5 * 60 * 1000);
 
   function startStorm() {
     runLightning();
-    if (getSessionFlag(thunderKey)) return;
+    if (!isHomePage && getSessionFlag(thunderKey)) return;
 
     window.setTimeout(() => {
       const thunderAttempt = playThunder();
