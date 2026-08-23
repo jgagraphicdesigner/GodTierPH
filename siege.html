@@ -7,7 +7,7 @@
   <meta name="description" content="GodTierPH siege preparation board for Ragnarok: The New World." />
   <title>GodTierPH | Siege</title>
   <link rel="icon" type="image/png" href="assets/godtierph-icon.png" />
-  <link rel="stylesheet" href="styles.css?v=electric-14" />
+  <link rel="stylesheet" href="styles.css?v=party-modal-3" />
 </head>
 <body>
   <header class="topbar">
@@ -83,6 +83,28 @@
           <h3>Review and improve</h3>
           <p>Post notes, screenshots, MVPs, and issues so the next siege gets cleaner.</p>
         </article>
+      </div>
+    </section>
+
+    <section id="siege-party-lookup" class="section tight">
+      <div class="section-title">
+        <p class="eyebrow">FIND MY PARTY</p>
+        <h2>Check your assigned party before Siege.</h2>
+        <p>Search your character name to confirm your league, team, party number, team leader, party leader, and party members.</p>
+      </div>
+      <div class="sheet-panel">
+        <form class="party-search" id="partySearchForm">
+          <label for="partySearchInput">
+            <span>Find your party</span>
+            <small>Type your character name, choose it from the suggestions, then search.</small>
+          </label>
+          <div class="party-search-row">
+            <input id="partySearchInput" name="partySearchInput" type="search" list="partyNameSuggestions" placeholder="Search player name" autocomplete="off" />
+            <datalist id="partyNameSuggestions"></datalist>
+            <button class="btn primary" type="submit">Search</button>
+          </div>
+          <p class="party-search-help" id="partySearchHelp">Loading names from Main League and Sub League...</p>
+        </form>
       </div>
     </section>
 
@@ -207,6 +229,15 @@
     <img src="assets/godtierph-icon.png" alt="" />
     <span><strong>GODTIERPH</strong><small>Siege Board</small></span>
   </footer>
+
+  <div class="party-lookup-modal" id="partyLookupModal" role="dialog" aria-modal="true" aria-labelledby="partyLookupTitle" hidden>
+    <button class="party-lookup-backdrop" type="button" data-close-party-lookup aria-label="Close party lookup"></button>
+    <section class="party-lookup-card" tabindex="-1">
+      <button class="party-lookup-close" type="button" data-close-party-lookup aria-label="Close party lookup">Close</button>
+      <h2 class="visually-hidden" id="partyLookupTitle">Player assignment</h2>
+      <div class="party-lookup-results" id="partyLookupResults"></div>
+    </section>
+  </div>
 
   <script src="script.js?v=presence-1"></script>
 </body>
