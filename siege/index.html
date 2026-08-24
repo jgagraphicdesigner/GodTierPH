@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07080c" />
+  <meta name="description" content="GodTierPH siege preparation board for Ragnarok: The New World." />
+  <title>GodTierPH | Siege</title>
+  <link rel="icon" type="image/png" href="/assets/godtierph-icon.png" />
+  <link rel="stylesheet" href="/styles.css?v=party-modal-3" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="GodTierPH home">
+      <img src="/assets/godtierph-icon.png" alt="GodTierPH guild emblem" class="brand-icon" />
+      <span><strong>GODTIERPH</strong><small>Rise Above. Fight As One.</small></span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Open navigation" aria-expanded="false">Menu</button>
+    <nav id="mainNav" class="nav" aria-label="Primary navigation">
+      <a href="/">Home</a>
+      <div class="nav-group">
+        <a href="/events">Guild Events</a>
+        <div class="submenu" aria-label="Guild Events submenu">
+          <a href="/raffle">Weekly Raffles</a>
+          <a href="/5v5">5v5 Clash of Gods</a>
+          <a href="/crown">Crown of Contribution</a>
+        </div>
+      </div>
+      <div class="nav-group">
+        <a href="/league">Guild League</a>
+        <div class="submenu" aria-label="Guild League submenu">
+          <a href="/main">Strategy - Main League</a>
+          <a href="/sub">Strategy - Sub League</a>
+          <a href="/findmyparty">Find My Party</a>
+          <a href="/combo">Team Combo</a>
+        </div>
+      </div>
+      <a class="active" href="/siege">Siege</a>
+      <a href="/guides">Guides</a>
+      <a href="/media">Media</a>
+      <div class="nav-group">
+        <a href="/builds">Builds</a>
+        <div class="submenu" aria-label="Builds submenu">
+          <a href="/builds">Builds Overview</a>
+          <a href="/nw">Night Watch</a>
+          <a href="/sinx">Assassin Cross</a>
+          <a href="/ws">White Smith</a>
+          <a href="/sniper">Sniper</a>
+          <a href="/lk">Lord Knight</a>
+          <a href="/paladin">Paladin</a>
+          <a href="/hw">High Wizard</a>
+          <a href="/hp">High Priest</a>
+          <a href="/champion">Champion</a>
+          <a href="/alithea">Alithea</a>
+        </div>
+      </div>
+      <a href="/contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero section league-hero siege-hero">
+      <img class="league-hero-bg" src="/assets/siege-hero.png" alt="" aria-hidden="true" />
+      <p class="eyebrow">SIEGE</p>
+      <h1>Prepare the guild before war.</h1>
+      <p class="hero-text">Use this page for siege timing, assignments, defense groups, push groups, and final reminders before the call starts.</p>
+    </section>
+
+    <section class="section tight">
+      <div class="feature-grid three">
+        <article class="info-card accent-blue">
+          <span class="card-kicker">Before Siege</span>
+          <h3>Check gear and supplies</h3>
+          <p>Confirm consumables, cards, resistance gear, voice comms, and party placement before assembly.</p>
+        </article>
+        <article class="info-card accent-red">
+          <span class="card-kicker">During Siege</span>
+          <h3>Follow the shot caller</h3>
+          <p>Push only when called, defend choke points, and avoid splitting from your assigned group.</p>
+        </article>
+        <article class="info-card accent-gold">
+          <span class="card-kicker">After Siege</span>
+          <h3>Review and improve</h3>
+          <p>Post notes, screenshots, MVPs, and issues so the next siege gets cleaner.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="siege-party-lookup" class="section tight">
+      <div class="section-title">
+        <p class="eyebrow">FIND MY PARTY</p>
+        <h2>Check your assigned party before Siege.</h2>
+        <p>Search your character name to confirm your league, team, party number, team leader, party leader, and party members.</p>
+      </div>
+      <div class="sheet-panel">
+        <form class="party-search" id="partySearchForm">
+          <label for="partySearchInput">
+            <span>Find your party</span>
+            <small>Type your character name, choose it from the suggestions, then search.</small>
+          </label>
+          <div class="party-search-row">
+            <input id="partySearchInput" name="partySearchInput" type="search" list="partyNameSuggestions" placeholder="Search player name" autocomplete="off" />
+            <datalist id="partyNameSuggestions"></datalist>
+            <button class="btn primary" type="submit">Search</button>
+          </div>
+          <p class="party-search-help" id="partySearchHelp">Loading names from Main League and Sub League...</p>
+        </form>
+      </div>
+    </section>
+
+    <section id="siege-strategy" class="section tight">
+      <div class="section-title">
+        <p class="eyebrow">SIEGE WAR STRATEGY</p>
+        <h2>Break defenses and hold the line.</h2>
+        <p>Use these calls when the guild needs to break a stacked defense or protect our own choke points.</p>
+      </div>
+
+      <div class="class-grid">
+        <article class="info-card accent-red">
+          <span class="card-kicker">Attack Call</span>
+          <h3>Strategy to break an enemy defense</h3>
+          <ul class="compact-list">
+            <li>Regroup first. Everyone should rebuff, eat all buff foods, and wait for the commander call.</li>
+            <li>Target priority is Wizards first, then Priests. Remove their AoE damage and support before pushing deeper.</li>
+            <li>Assassin Cross, pistol-build Night Watch, and Alithea should dive into the enemy group and cast all debuff skills.</li>
+            <li>Snipers must be ready to finish priority targets as soon as the enemy group is debuffed.</li>
+            <li>Lord Knights, Paladins, and Champions should pressure enemy Snipers and Gunners to distract their backline.</li>
+            <li>Wizards should continuously spam Storm Gust, Lord of Vermilion, and Meteor Storm on the enemy area.</li>
+            <li>High Priests should spam Sanctuary and Ruwach to reveal hidden players.</li>
+            <li>Machine Gun builds should keep Blazing Cavern active on the enemy stack.</li>
+          </ul>
+        </article>
+
+        <article class="info-card accent-blue">
+          <span class="card-kicker">Defense Call</span>
+          <h3>Strategy to defend our position</h3>
+          <ul class="compact-list">
+            <li>Wizards should continuously spam Storm Gust, Lord of Vermilion, and Meteor Storm on the path area.</li>
+            <li>Alithea should spam Glacial Monolith and Overload to disrupt players entering the choke point.</li>
+            <li>Snipers should set traps along the path area and attack anyone who steps forward.</li>
+            <li>High Priests should spam Sanctuary and Ruwach to sustain the team and reveal hidden players.</li>
+            <li>Machine Gun builds should use Last Stand and hold damage pressure on the entrance path.</li>
+            <li>Lord Knights and Paladins should stay in front to cover the guild and block enemy movement.</li>
+            <li>Assassin Cross players should keep poison pressure active across the defense area.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section tight">
+      <div class="section-title">
+        <p class="eyebrow">SIEGE ROUTE</p>
+        <h2>Secret passage to the Emperium.</h2>
+        <p>Use this guide when the commander calls for palace entry. Watch the video to see the live route and timing.</p>
+      </div>
+
+      <div class="media-grid siege-route-grid">
+        <article class="media-card siege-video-card">
+          <div class="video-embed">
+            <iframe
+              src="https://www.youtube.com/embed/hAsS_nA902c"
+              title="GodTierPH siege route YouTube video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+          </div>
+          <div class="media-copy">
+            <span class="card-kicker">Live Action</span>
+            <h3>Watch the route first</h3>
+            <p>Use this Siege route video as the movement reference during war calls.</p>
+            <a class="text-link" href="https://www.youtube.com/watch?v=hAsS_nA902c" target="_blank" rel="noreferrer">Open video</a>
+          </div>
+        </article>
+
+        <article class="media-card siege-route-instructions">
+          <div class="media-copy">
+            <span class="card-kicker">Secret Passage Route</span>
+            <h3>How to get to the Emperium</h3>
+            <p>Follow these three maps when the commander calls for the secret passage route. Stay grouped, move fast, and use the portals in order.</p>
+          </div>
+        </article>
+
+        <article class="media-card siege-map-card siege-map-one">
+          <figure class="siege-map-frame">
+            <img src="/assets/siege-map-1.png" alt="Siege Map 1 showing the upper-left red portal secret passage entrance." />
+            <span class="route-ring route-ring-red" aria-hidden="true"></span>
+            <span class="route-arrow route-arrow-red" aria-hidden="true"></span>
+            <span class="route-label route-label-red">Secret Passage</span>
+          </figure>
+          <div class="media-copy">
+            <span class="card-kicker">Step 1</span>
+            <h3>Enter the upper-left red portal</h3>
+            <p>On Siege Map 1, use the red portal on the upper-left side. This portal leads into the secret passage.</p>
+          </div>
+        </article>
+
+        <article class="media-card siege-map-card siege-map-two">
+          <figure class="siege-map-frame">
+            <img src="/assets/siege-map-2.png" alt="Siege Map 2 showing the green portal inside the secret passage route." />
+            <span class="route-ring route-ring-green" aria-hidden="true"></span>
+            <span class="route-arrow route-arrow-green" aria-hidden="true"></span>
+            <span class="route-label route-label-green">Green Portal</span>
+          </figure>
+          <div class="media-copy">
+            <span class="card-kicker">Step 2</span>
+            <h3>Go back and enter the green portal</h3>
+            <p>Inside the secret passage area, turn back toward the green portal and enter it. This will teleport you into the main hall route.</p>
+          </div>
+        </article>
+
+        <article class="media-card siege-map-card siege-map-three">
+          <figure class="siege-map-frame">
+            <img src="/assets/siege-map-3.png" alt="Siege Map 3 showing the Emperium in the center of the room." />
+            <span class="route-ring route-ring-gold" aria-hidden="true"></span>
+            <span class="route-arrow route-arrow-gold" aria-hidden="true"></span>
+            <span class="route-label route-label-gold">Emperium</span>
+          </figure>
+          <div class="media-copy">
+            <span class="card-kicker">Step 3</span>
+            <h3>Push to the center Emperium</h3>
+            <p>On Siege Map 3, move toward the middle of the room and focus the Emperium. Clear defenders only when they block the push.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <img src="/assets/godtierph-icon.png" alt="" />
+    <span><strong>GODTIERPH</strong><small>Siege Board</small></span>
+  </footer>
+
+  <div class="party-lookup-modal" id="partyLookupModal" role="dialog" aria-modal="true" aria-labelledby="partyLookupTitle" hidden>
+    <button class="party-lookup-backdrop" type="button" data-close-party-lookup aria-label="Close party lookup"></button>
+    <section class="party-lookup-card" tabindex="-1">
+      <button class="party-lookup-close" type="button" data-close-party-lookup aria-label="Close party lookup">Close</button>
+      <h2 class="visually-hidden" id="partyLookupTitle">Player assignment</h2>
+      <div class="party-lookup-results" id="partyLookupResults"></div>
+    </section>
+  </div>
+
+  <script src="/script.js?v=presence-1"></script>
+</body>
+</html>
