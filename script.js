@@ -81,19 +81,14 @@ document.addEventListener('click', (event) => {
   const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
   const storageKey = 'godtierphSoundEffectsEnabled';
   const musicSource = '/assets/audio/storm-background.mp3';
-  const uiClickSource = '/assets/audio/gear-click.mp3';
   const musicVolume = 0.16;
   let audioContext = null;
   let musicAudio = null;
   let musicFadeTimer = null;
   let musicStartedThisPage = false;
-  let uiClickAudio = null;
-  let uiClickResetTimer = null;
   let enabled = false;
   let lastThunder = 0;
-  let lastClick = 0;
   let lastBurst = 0;
-  let lastMenuTone = 0;
   let lastMenuTarget = null;
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const menuSelector = '#mainNav a, .submenu a, .footer-link-group a';
@@ -147,46 +142,6 @@ document.addEventListener('click', (event) => {
     musicAudio.preload = 'auto';
     musicAudio.volume = 0;
     return musicAudio;
-  }
-
-  function getUiClickAudio() {
-    if (typeof Audio === 'undefined') return null;
-    if (uiClickAudio) return uiClickAudio;
-
-    uiClickAudio = new Audio(uiClickSource);
-    uiClickAudio.preload = 'auto';
-    uiClickAudio.volume = 0.72;
-    return uiClickAudio;
-  }
-
-  async function playUiClickSample(force = false, volume = 0.72) {
-    if (!enabled && !force) return false;
-    const audio = getUiClickAudio();
-    if (!audio) return false;
-
-    window.clearTimeout(uiClickResetTimer);
-    audio.pause();
-    try {
-      audio.currentTime = 0;
-    } catch (error) {
-      // Some browsers can reject seeking before metadata is ready.
-    }
-    audio.volume = Math.min(1, Math.max(0, volume));
-
-    try {
-      await audio.play();
-      uiClickResetTimer = window.setTimeout(() => {
-        audio.pause();
-        try {
-          audio.currentTime = 0;
-        } catch (error) {
-          // Keep the next click graceful if seeking is blocked.
-        }
-      }, 850);
-      return true;
-    } catch (error) {
-      return false;
-    }
   }
 
   function fadeMusic(targetVolume, duration = 700) {
@@ -366,19 +321,11 @@ document.addEventListener('click', (event) => {
   }
 
   async function playClick(force = false, intensity = 1) {
-    if (!enabled && !force) return false;
-    const nowMs = performance.now();
-    if (nowMs - lastClick < 95) return false;
-    lastClick = nowMs;
-    return playUiClickSample(force, Math.min(0.9, Math.max(0.58, 0.72 * intensity)));
+    return false;
   }
 
   async function playMenuHighlight(force = false, intensity = 1) {
-    if (!enabled && !force) return false;
-    const nowMs = performance.now();
-    if (!force && nowMs - lastMenuTone < 240) return false;
-    lastMenuTone = nowMs;
-    return playUiClickSample(force, Math.min(0.78, Math.max(0.48, 0.62 * intensity)));
+    return false;
   }
 
   function createToggle() {
