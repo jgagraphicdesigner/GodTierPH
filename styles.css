@@ -150,10 +150,11 @@ h3{font-size:1.18rem;letter-spacing:0}
 .league-update-section{padding-top:54px}
 .league-update-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:end;margin-bottom:22px}
 .league-update-heading p:last-child{max-width:760px;color:#d1c8bd;font-size:1.05rem}
+.league-update-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
 .league-update-shot{position:relative;margin:0;overflow:hidden;border:1px solid rgba(86,182,255,.34);border-radius:10px;background:#07101b;box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 42px rgba(78,168,255,.14)}
 .league-update-shot:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(7,8,12,.06),rgba(7,8,12,0) 52%,rgba(7,8,12,.18)),radial-gradient(ellipse at 50% 0%,rgba(255,255,255,.16),transparent 34%);mix-blend-mode:screen}
-.league-update-shot img{width:100%;height:auto}
-.league-update-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:hidden;border:1px solid rgba(86,182,255,.24);border-top:0;border-radius:0 0 10px 10px;background:linear-gradient(90deg,rgba(14,24,36,.78),rgba(8,12,18,.84));box-shadow:0 18px 48px rgba(0,0,0,.26)}
+.league-update-shot img{display:block;width:100%;height:auto}
+.league-update-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden;margin-top:14px;border:1px solid rgba(86,182,255,.24);border-radius:10px;background:linear-gradient(90deg,rgba(14,24,36,.78),rgba(8,12,18,.84));box-shadow:0 18px 48px rgba(0,0,0,.26)}
 .league-update-strip span{display:grid;gap:3px;padding:15px 18px;border-right:1px solid rgba(86,182,255,.16);color:#f5f0e8;font-weight:800}
 .league-update-strip span:last-child{border-right:0}
 .league-update-strip strong{color:#8ecbff;font-size:.68rem;font-weight:950;letter-spacing:.13em;text-transform:uppercase}
@@ -513,6 +514,7 @@ body.modal-open{overflow:hidden}
   .footer-logo{width:auto}
   .league-update-heading{grid-template-columns:1fr;align-items:start}
   .league-update-heading .btn{width:100%}
+  .league-update-gallery{grid-template-columns:1fr}
   .league-update-strip{grid-template-columns:1fr}
   .league-update-strip span{border-right:0;border-bottom:1px solid rgba(86,182,255,.16)}
   .league-update-strip span:last-child{border-bottom:0}
