@@ -84,6 +84,19 @@ document.addEventListener('click', (event) => {
   let enabled = false;
   let lastThunder = 0;
   let lastClick = 0;
+  const clickSelector = [
+    'a',
+    'button',
+    '.btn',
+    '[role="button"]',
+    'input[type="button"]',
+    'input[type="submit"]',
+    'input[type="reset"]',
+    'summary',
+    '.party-lookup-close',
+    '.image-lightbox-close',
+    '.party-search-suggestion',
+  ].join(', ');
 
   try {
     enabled = localStorage.getItem(storageKey) === 'true';
@@ -183,7 +196,7 @@ document.addEventListener('click', (event) => {
     return true;
   }
 
-  async function playClick(force = false) {
+  async function playClick(force = false, intensity = 1) {
     if (!enabled && !force) return false;
     const nowMs = performance.now();
     if (nowMs - lastClick < 140) return false;
@@ -195,12 +208,13 @@ document.addEventListener('click', (event) => {
     const now = context.currentTime;
     const oscillator = context.createOscillator();
     const gain = context.createGain();
+    const peak = Math.min(0.055, Math.max(0.026, 0.04 * intensity));
 
     oscillator.type = 'triangle';
-    oscillator.frequency.setValueAtTime(720, now);
-    oscillator.frequency.exponentialRampToValueAtTime(260, now + 0.12);
+    oscillator.frequency.setValueAtTime(860, now);
+    oscillator.frequency.exponentialRampToValueAtTime(280, now + 0.13);
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.035, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(peak, now + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
     oscillator.connect(gain);
     gain.connect(context.destination);
@@ -218,10 +232,11 @@ document.addEventListener('click', (event) => {
     updateButton(button);
 
     button.addEventListener('click', () => {
+      if (enabled) playClick(false, 0.9);
       enabled = !enabled;
       savePreference();
       updateButton(button);
-      if (enabled) playClick(true);
+      if (enabled) playClick(true, 1.25);
     });
 
     document.body.append(button);
@@ -232,8 +247,10 @@ document.addEventListener('click', (event) => {
   }, { passive: true });
 
   document.addEventListener('click', (event) => {
-    if (!enabled || event.target.closest('#soundToggle')) return;
-    if (event.target.closest('a, button')) playClick();
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    if (!enabled || !target || target.closest('#soundToggle')) return;
+    const control = target.closest(clickSelector);
+    if (control) playClick(false, control.matches('a') ? 0.82 : 1);
   }, true);
 
   window.GODTIERPH_SFX = {
