@@ -81,18 +81,24 @@ document.addEventListener('click', (event) => {
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   if (motionQuery?.matches) return;
 
+  const clouds = document.createElement('div');
+  clouds.className = 'neon-thunder-clouds';
+  clouds.setAttribute('aria-hidden', 'true');
+
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d', { alpha: true });
   if (!context) return;
 
   canvas.className = 'neon-lightning-canvas';
   canvas.setAttribute('aria-hidden', 'true');
+  document.body.prepend(clouds);
   document.body.prepend(canvas);
 
   let width = 0;
   let height = 0;
   let density = 1;
   let nextStrike = 0;
+  let lastCloudFlash = 0;
   const bolts = [];
 
   function resizeCanvas() {
@@ -186,6 +192,16 @@ document.addEventListener('click', (event) => {
     context.restore();
   }
 
+  function triggerCloudFlash(now) {
+    if (now - lastCloudFlash < 1500) return;
+    lastCloudFlash = now;
+    document.body.classList.remove('thunder-flash');
+    window.requestAnimationFrame(() => {
+      document.body.classList.add('thunder-flash');
+      window.setTimeout(() => document.body.classList.remove('thunder-flash'), 950);
+    });
+  }
+
   function draw(now) {
     context.clearRect(0, 0, width, height);
 
@@ -193,6 +209,7 @@ document.addEventListener('click', (event) => {
       if (now > nextStrike) {
         bolts.push(createBolt(now));
         if (Math.random() > 0.72) bolts.push(createBolt(now + 90));
+        if (Math.random() > 0.28) triggerCloudFlash(now);
         nextStrike = now + randomBetween(1150, 2600);
       }
 

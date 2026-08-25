@@ -31,6 +31,18 @@ body:after{z-index:0;opacity:.055;background:
   background-position:4% 8%,88% 16%,48% 92%,72% 0,24% 88%;
   filter:blur(18px) saturate(1.2);
   animation:electric-orb-float 26s ease-in-out infinite alternate}
+.neon-thunder-clouds{position:fixed;inset:-12%;z-index:0;pointer-events:none;opacity:.32;mix-blend-mode:screen;filter:blur(34px) saturate(1.25);transform:translateZ(0);overflow:hidden}
+.neon-thunder-clouds:before,.neon-thunder-clouds:after{content:"";position:absolute;inset:0;background:
+  radial-gradient(ellipse at 16% 14%,rgba(49,138,255,.18),transparent 34%),
+  radial-gradient(ellipse at 52% 8%,rgba(112,214,255,.14),transparent 30%),
+  radial-gradient(ellipse at 88% 18%,rgba(46,132,255,.16),transparent 35%),
+  radial-gradient(ellipse at 28% 76%,rgba(33,116,255,.1),transparent 42%),
+  radial-gradient(ellipse at 74% 82%,rgba(79,180,255,.12),transparent 42%);
+  background-size:1100px 680px,980px 620px,1160px 720px,1260px 760px,1080px 700px;
+  background-position:0 0,52% 4%,100% 8%,18% 100%,88% 92%;
+  animation:thunder-cloud-drift 38s ease-in-out infinite alternate}
+.neon-thunder-clouds:after{opacity:0;filter:brightness(1.8) saturate(1.55);animation:thunder-cloud-drift 42s ease-in-out infinite alternate,thunder-cloud-glow 9s ease-in-out infinite}
+body.thunder-flash .neon-thunder-clouds:after{animation:thunder-cloud-drift 42s ease-in-out infinite alternate,thunder-cloud-flash .92s ease-out}
 .neon-lightning-canvas{position:fixed;inset:0;z-index:0;width:100%;height:100%;pointer-events:none;opacity:.5;mix-blend-mode:screen;filter:saturate(1.18);transform:translateZ(0)}
 main,footer{position:relative;z-index:1}
 a{color:inherit;text-decoration:none}
@@ -467,6 +479,9 @@ body.modal-open{overflow:hidden}
 @keyframes storm-flash{0%,13%,100%{opacity:0}5%{opacity:.96}9%{opacity:.16}18%{opacity:.52}23%{opacity:0}36%{opacity:.34}42%{opacity:0}}
 @keyframes storm-bolt-strike{0%,7%,100%{opacity:0;transform:translate3d(-8px,-16px,0) scaleY(.92)}8%,16%{opacity:1;transform:translate3d(0,0,0) scaleY(1)}22%{opacity:.2}31%{opacity:.85;transform:translate3d(8px,6px,0) scaleY(1.04)}44%{opacity:0}}
 @keyframes electric-cloud-drift{0%{transform:translate3d(-1.2%,.4%,0) scale(1.04);opacity:.06}42%{opacity:.1}100%{transform:translate3d(1.4%,-.8%,0) scale(1.08);opacity:.075}}
+@keyframes thunder-cloud-drift{0%{transform:translate3d(-1.8%,.6%,0) scale(1.02);background-position:0 0,52% 4%,100% 8%,18% 100%,88% 92%}100%{transform:translate3d(1.6%,-.8%,0) scale(1.06);background-position:6% 5%,48% 0,94% 13%,24% 94%,82% 86%}}
+@keyframes thunder-cloud-glow{0%,72%,100%{opacity:0}76%{opacity:.1}80%{opacity:.035}}
+@keyframes thunder-cloud-flash{0%,100%{opacity:0}8%{opacity:.38}18%{opacity:.1}32%{opacity:.3}52%{opacity:.04}}
 @keyframes electric-orb-float{
   0%{opacity:.045;background-position:4% 8%,88% 16%,48% 92%,72% 0,24% 88%;transform:translate3d(-1%,0,0) scale(1)}
   22%{opacity:.07}
@@ -476,7 +491,7 @@ body.modal-open{overflow:hidden}
   100%{opacity:.075;background-position:15% 20%,76% 30%,58% 78%,62% 12%,36% 74%;transform:translate3d(1.2%,-1%,0) scale(1.04)}
 }
 @keyframes online-pulse{0%{box-shadow:0 0 0 0 rgba(86,182,255,.62)}70%{box-shadow:0 0 0 10px rgba(86,182,255,0)}100%{box-shadow:0 0 0 0 rgba(86,182,255,0)}}
-@media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}body:after{opacity:.025}.neon-lightning-canvas,.storm-overlay{display:none}.online-users-pulse{animation:none}}
+@media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}body:after{opacity:.025}.neon-thunder-clouds,.neon-lightning-canvas,.storm-overlay{display:none}.online-users-pulse{animation:none}}
 @media(max-width:1050px){
   .hero,.split-section,.event-row,.media-grid{grid-template-columns:1fr}
   .raffle-result-grid{grid-template-columns:1fr}
