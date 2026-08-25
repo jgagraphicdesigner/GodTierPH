@@ -85,6 +85,7 @@ document.addEventListener('click', (event) => {
   let audioContext = null;
   let musicAudio = null;
   let musicFadeTimer = null;
+  let musicStartedThisPage = false;
   let enabled = false;
   let lastThunder = 0;
   let lastClick = 0;
@@ -182,6 +183,11 @@ document.addEventListener('click', (event) => {
     if (!audio) return false;
 
     try {
+      if (!musicStartedThisPage) {
+        audio.currentTime = 0;
+        musicStartedThisPage = true;
+      }
+
       if (audio.paused) {
         audio.volume = 0;
         await audio.play();
