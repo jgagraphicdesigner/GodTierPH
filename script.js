@@ -77,6 +77,151 @@ document.addEventListener('click', (event) => {
   }
 });
 
+(function initNeonLightningBackground() {
+  const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  if (motionQuery?.matches) return;
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', { alpha: true });
+  if (!context) return;
+
+  canvas.className = 'neon-lightning-canvas';
+  canvas.setAttribute('aria-hidden', 'true');
+  document.body.prepend(canvas);
+
+  let width = 0;
+  let height = 0;
+  let density = 1;
+  let nextStrike = 0;
+  const bolts = [];
+
+  function resizeCanvas() {
+    density = Math.min(window.devicePixelRatio || 1, 2);
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = Math.max(1, Math.floor(width * density));
+    canvas.height = Math.max(1, Math.floor(height * density));
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    context.setTransform(density, 0, 0, density, 0, 0);
+  }
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function buildPath(startX, startY, endX, endY, segments, jitter) {
+    const points = [];
+
+    for (let index = 0; index <= segments; index += 1) {
+      const progress = index / segments;
+      const ease = Math.sin(progress * Math.PI);
+      points.push({
+        x: startX + (endX - startX) * progress + randomBetween(-jitter, jitter) * ease,
+        y: startY + (endY - startY) * progress + randomBetween(-jitter * 0.45, jitter * 0.45) * ease,
+      });
+    }
+
+    return points;
+  }
+
+  function createBranch(origin, direction) {
+    const branchLength = randomBetween(70, Math.min(width, height) * 0.18);
+    const branchEndX = origin.x + Math.cos(direction) * branchLength;
+    const branchEndY = origin.y + Math.sin(direction) * branchLength;
+    return buildPath(origin.x, origin.y, branchEndX, branchEndY, 4 + Math.floor(Math.random() * 4), 22);
+  }
+
+  function createBolt(now) {
+    const startX = width * randomBetween(0.08, 0.92);
+    const startY = randomBetween(-height * 0.08, height * 0.12);
+    const endX = Math.max(0, Math.min(width, startX + randomBetween(-width * 0.35, width * 0.35)));
+    const endY = height * randomBetween(0.42, 1.06);
+    const segments = 14 + Math.floor(Math.random() * 10);
+    const path = buildPath(startX, startY, endX, endY, segments, Math.max(34, width * 0.035));
+    const branchCount = 2 + Math.floor(Math.random() * 4);
+    const branches = [];
+
+    for (let index = 0; index < branchCount; index += 1) {
+      const origin = path[2 + Math.floor(Math.random() * Math.max(2, path.length - 5))];
+      const direction = randomBetween(Math.PI * 0.05, Math.PI * 0.95) * (Math.random() > 0.5 ? 1 : -1);
+      branches.push(createBranch(origin, direction));
+    }
+
+    return {
+      path,
+      branches,
+      born: now,
+      life: randomBetween(520, 900),
+      alpha: randomBetween(0.11, 0.22),
+    };
+  }
+
+  function strokePath(points, alpha, sizeMultiplier = 1) {
+    if (points.length < 2) return;
+
+    context.save();
+    context.globalCompositeOperation = 'lighter';
+    context.lineCap = 'round';
+    context.lineJoin = 'round';
+
+    [
+      { width: 18 * sizeMultiplier, alpha: alpha * 0.08, blur: 24 },
+      { width: 8 * sizeMultiplier, alpha: alpha * 0.18, blur: 16 },
+      { width: 2.6 * sizeMultiplier, alpha: alpha * 0.72, blur: 8 },
+      { width: 1 * sizeMultiplier, alpha: Math.min(0.7, alpha * 1.4), blur: 0 },
+    ].forEach((pass) => {
+      context.beginPath();
+      context.moveTo(points[0].x, points[0].y);
+      for (let index = 1; index < points.length; index += 1) {
+        context.lineTo(points[index].x, points[index].y);
+      }
+      context.lineWidth = pass.width;
+      context.shadowBlur = pass.blur;
+      context.shadowColor = 'rgba(69, 184, 255, 0.85)';
+      context.strokeStyle = `rgba(91, 201, 255, ${pass.alpha})`;
+      context.stroke();
+    });
+
+    context.restore();
+  }
+
+  function draw(now) {
+    context.clearRect(0, 0, width, height);
+
+    if (!document.hidden) {
+      if (now > nextStrike) {
+        bolts.push(createBolt(now));
+        if (Math.random() > 0.72) bolts.push(createBolt(now + 90));
+        nextStrike = now + randomBetween(1150, 2600);
+      }
+
+      for (let index = bolts.length - 1; index >= 0; index -= 1) {
+        const bolt = bolts[index];
+        const age = now - bolt.born;
+        if (age < 0) continue;
+        const progress = age / bolt.life;
+
+        if (progress >= 1) {
+          bolts.splice(index, 1);
+          continue;
+        }
+
+        const flicker = 0.72 + Math.sin(progress * Math.PI * 10) * 0.18;
+        const fade = Math.pow(1 - progress, 1.7) * flicker;
+        strokePath(bolt.path, bolt.alpha * fade, 1);
+        bolt.branches.forEach((branch) => strokePath(branch, bolt.alpha * fade * 0.46, 0.72));
+      }
+    }
+
+    window.requestAnimationFrame(draw);
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  window.requestAnimationFrame(draw);
+}());
+
 (function initHeroVideos() {
   const heroes = document.querySelectorAll('[data-home-hero], [data-video-hero]');
 
