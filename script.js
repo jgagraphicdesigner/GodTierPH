@@ -80,7 +80,11 @@ document.addEventListener('click', (event) => {
 (function initSiteSoundEffects() {
   const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
   const storageKey = 'godtierphSoundEffectsEnabled';
+  const musicSource = '/assets/audio/storm-background.mp3';
+  const musicVolume = 0.16;
   let audioContext = null;
+  let musicAudio = null;
+  let musicFadeTimer = null;
   let enabled = false;
   let lastThunder = 0;
   let lastClick = 0;
@@ -128,6 +132,70 @@ document.addEventListener('click', (event) => {
     if (!context) return Promise.resolve(null);
     if (context.state === 'running') return Promise.resolve(context);
     return context.resume().then(() => context).catch(() => null);
+  }
+
+  function getMusicAudio() {
+    if (typeof Audio === 'undefined') return null;
+    if (musicAudio) return musicAudio;
+
+    musicAudio = new Audio(musicSource);
+    musicAudio.loop = true;
+    musicAudio.preload = 'auto';
+    musicAudio.volume = 0;
+    return musicAudio;
+  }
+
+  function fadeMusic(targetVolume, duration = 700) {
+    const audio = getMusicAudio();
+    if (!audio) return false;
+
+    window.clearInterval(musicFadeTimer);
+    const startVolume = Number.isFinite(audio.volume) ? audio.volume : 0;
+    const target = Math.min(musicVolume, Math.max(0, targetVolume));
+    const startedAt = performance.now();
+
+    if (duration <= 0) {
+      audio.volume = target;
+      if (target <= 0.001) audio.pause();
+      return true;
+    }
+
+    musicFadeTimer = window.setInterval(() => {
+      const progress = Math.min(1, (performance.now() - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      audio.volume = startVolume + ((target - startVolume) * eased);
+
+      if (progress >= 1) {
+        window.clearInterval(musicFadeTimer);
+        musicFadeTimer = null;
+        audio.volume = target;
+        if (target <= 0.001) audio.pause();
+      }
+    }, 50);
+
+    return true;
+  }
+
+  async function startBackgroundMusic() {
+    if (!enabled) return false;
+    const audio = getMusicAudio();
+    if (!audio) return false;
+
+    try {
+      if (audio.paused) {
+        audio.volume = 0;
+        await audio.play();
+      }
+      fadeMusic(musicVolume, 950);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function stopBackgroundMusic() {
+    if (!musicAudio) return false;
+    return fadeMusic(0, 550);
   }
 
   function buildNoiseBuffer(context, duration) {
@@ -196,9 +264,9 @@ document.addEventListener('click', (event) => {
   function updateButton(button) {
     button.classList.toggle('enabled', enabled);
     button.setAttribute('aria-pressed', String(enabled));
-    button.setAttribute('aria-label', enabled ? 'Disable sound effects' : 'Enable sound effects');
+    button.setAttribute('aria-label', enabled ? 'Disable sound effects and music' : 'Enable sound effects and music');
     const label = button.querySelector('.sound-toggle-text');
-    if (label) label.textContent = enabled ? 'Sound On' : 'Sound';
+    if (label) label.textContent = enabled ? 'Audio On' : 'Audio';
   }
 
   async function playThunder(intensity = 1) {
@@ -325,13 +393,17 @@ document.addEventListener('click', (event) => {
     updateButton(button);
 
     button.addEventListener('click', () => {
-      if (enabled) playClick(false, 0.9);
+      const wasEnabled = enabled;
+      if (wasEnabled) playClick(false, 0.9);
       enabled = !enabled;
       savePreference();
       updateButton(button);
       if (enabled) {
         playClick(true, 1.25);
         triggerStormBurst(1.08, { force: true });
+        startBackgroundMusic();
+      } else {
+        stopBackgroundMusic();
       }
     });
 
@@ -339,7 +411,10 @@ document.addEventListener('click', (event) => {
   }
 
   document.addEventListener('pointerdown', () => {
-    if (enabled) resumeAudio();
+    if (enabled) {
+      resumeAudio();
+      startBackgroundMusic();
+    }
   }, { passive: true });
 
   document.addEventListener('pointerover', (event) => {
@@ -379,6 +454,8 @@ document.addEventListener('click', (event) => {
     playThunder,
     playClick,
     playMenuHighlight,
+    startBackgroundMusic,
+    stopBackgroundMusic,
     triggerStormBurst,
     isEnabled: () => enabled,
   };
