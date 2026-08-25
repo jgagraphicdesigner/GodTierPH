@@ -85,7 +85,10 @@ document.addEventListener('click', (event) => {
   let lastThunder = 0;
   let lastClick = 0;
   let lastBurst = 0;
+  let lastMenuTone = 0;
+  let lastMenuTarget = null;
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const menuSelector = '#mainNav a, .submenu a, .footer-link-group a';
   const clickSelector = [
     'a',
     'button',
@@ -272,6 +275,47 @@ document.addEventListener('click', (event) => {
     return true;
   }
 
+  async function playMenuHighlight(force = false, intensity = 1) {
+    if (!enabled && !force) return false;
+    const nowMs = performance.now();
+    if (!force && nowMs - lastMenuTone < 240) return false;
+    lastMenuTone = nowMs;
+
+    const context = await resumeAudio();
+    if (!context || context.state !== 'running') return false;
+
+    const now = context.currentTime;
+    const primary = context.createOscillator();
+    const overtone = context.createOscillator();
+    const primaryGain = context.createGain();
+    const overtoneGain = context.createGain();
+    const peak = Math.min(0.038, Math.max(0.018, 0.026 * intensity));
+
+    primary.type = 'sine';
+    primary.frequency.setValueAtTime(520, now);
+    primary.frequency.exponentialRampToValueAtTime(780, now + 0.1);
+    primaryGain.gain.setValueAtTime(0.0001, now);
+    primaryGain.gain.exponentialRampToValueAtTime(peak, now + 0.018);
+    primaryGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    overtone.type = 'triangle';
+    overtone.frequency.setValueAtTime(1040, now);
+    overtone.frequency.exponentialRampToValueAtTime(1320, now + 0.11);
+    overtoneGain.gain.setValueAtTime(0.0001, now);
+    overtoneGain.gain.exponentialRampToValueAtTime(peak * 0.44, now + 0.02);
+    overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+
+    primary.connect(primaryGain);
+    overtone.connect(overtoneGain);
+    primaryGain.connect(context.destination);
+    overtoneGain.connect(context.destination);
+    primary.start(now);
+    overtone.start(now);
+    primary.stop(now + 0.17);
+    overtone.stop(now + 0.14);
+    return true;
+  }
+
   function createToggle() {
     const button = document.createElement('button');
     button.className = 'sound-toggle';
@@ -298,11 +342,33 @@ document.addEventListener('click', (event) => {
     if (enabled) resumeAudio();
   }, { passive: true });
 
+  document.addEventListener('pointerover', (event) => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    if (!enabled || !target || target.closest('#soundToggle')) return;
+    const menuItem = target.closest(menuSelector);
+    if (!menuItem || menuItem === lastMenuTarget) return;
+    lastMenuTarget = menuItem;
+    playMenuHighlight(false, 0.72);
+    window.setTimeout(() => {
+      if (lastMenuTarget === menuItem) lastMenuTarget = null;
+    }, 520);
+  }, true);
+
+  document.addEventListener('focusin', (event) => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    if (!enabled || !target || target.closest('#soundToggle')) return;
+    if (target.closest(menuSelector)) playMenuHighlight(false, 0.68);
+  }, true);
+
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     if (!enabled || !target || target.closest('#soundToggle')) return;
     const control = target.closest(clickSelector);
     if (control) {
+      if (control.matches(menuSelector)) {
+        playMenuHighlight(true, 1.1);
+        return;
+      }
       const isButtonLike = control.matches('button, .btn, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], summary, .party-lookup-close, .image-lightbox-close, .party-search-suggestion');
       playClick(false, isButtonLike ? 1.05 : 0.82);
       if (isButtonLike) triggerStormBurst(0.78);
@@ -312,6 +378,7 @@ document.addEventListener('click', (event) => {
   window.GODTIERPH_SFX = {
     playThunder,
     playClick,
+    playMenuHighlight,
     triggerStormBurst,
     isEnabled: () => enabled,
   };
