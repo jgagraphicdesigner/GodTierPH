@@ -77,6 +77,178 @@ document.addEventListener('click', (event) => {
   }
 });
 
+(function initSiteSoundEffects() {
+  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+  const storageKey = 'godtierphSoundEffectsEnabled';
+  let audioContext = null;
+  let enabled = false;
+  let lastThunder = 0;
+  let lastClick = 0;
+
+  try {
+    enabled = localStorage.getItem(storageKey) === 'true';
+  } catch (error) {
+    enabled = false;
+  }
+
+  function savePreference() {
+    try {
+      localStorage.setItem(storageKey, String(enabled));
+    } catch (error) {
+      // Storage can be unavailable in private browsing.
+    }
+  }
+
+  function getContext() {
+    if (!AudioContextCtor) return null;
+    if (!audioContext) audioContext = new AudioContextCtor();
+    return audioContext;
+  }
+
+  function resumeAudio() {
+    const context = getContext();
+    if (!context) return Promise.resolve(null);
+    if (context.state === 'running') return Promise.resolve(context);
+    return context.resume().then(() => context).catch(() => null);
+  }
+
+  function buildNoiseBuffer(context, duration) {
+    const sampleCount = Math.floor(context.sampleRate * duration);
+    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+    const data = buffer.getChannelData(0);
+    let last = 0;
+
+    for (let index = 0; index < sampleCount; index += 1) {
+      const progress = index / sampleCount;
+      const envelope = Math.pow(1 - progress, 2.6);
+      last = (last * 0.88) + ((Math.random() * 2 - 1) * 0.12);
+      data[index] = last * envelope;
+    }
+
+    return buffer;
+  }
+
+  function updateButton(button) {
+    button.classList.toggle('enabled', enabled);
+    button.setAttribute('aria-pressed', String(enabled));
+    button.setAttribute('aria-label', enabled ? 'Disable sound effects' : 'Enable sound effects');
+    const label = button.querySelector('.sound-toggle-text');
+    if (label) label.textContent = enabled ? 'Sound On' : 'Sound';
+  }
+
+  async function playThunder(intensity = 1) {
+    if (!enabled) return false;
+    const nowMs = performance.now();
+    if (nowMs - lastThunder < 1700) return false;
+    lastThunder = nowMs;
+
+    const context = await resumeAudio();
+    if (!context || context.state !== 'running') return false;
+
+    const now = context.currentTime;
+    const master = context.createGain();
+    const lowpass = context.createBiquadFilter();
+    const noise = context.createBufferSource();
+    const rumble = context.createOscillator();
+    const rumbleGain = context.createGain();
+    const peak = Math.min(0.26, Math.max(0.08, 0.16 * intensity));
+
+    master.gain.setValueAtTime(0.0001, now);
+    master.gain.exponentialRampToValueAtTime(peak, now + 0.08);
+    master.gain.exponentialRampToValueAtTime(0.0001, now + 2.15);
+
+    lowpass.type = 'lowpass';
+    lowpass.frequency.setValueAtTime(620, now);
+    lowpass.frequency.exponentialRampToValueAtTime(95, now + 2);
+    lowpass.Q.setValueAtTime(0.75, now);
+
+    noise.buffer = buildNoiseBuffer(context, 2.3);
+    noise.connect(lowpass);
+    lowpass.connect(master);
+
+    rumble.type = 'sine';
+    rumble.frequency.setValueAtTime(54, now);
+    rumble.frequency.exponentialRampToValueAtTime(30, now + 2);
+    rumbleGain.gain.setValueAtTime(0.0001, now);
+    rumbleGain.gain.exponentialRampToValueAtTime(peak * 0.68, now + 0.15);
+    rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.05);
+    rumble.connect(rumbleGain);
+    rumbleGain.connect(master);
+
+    master.connect(context.destination);
+    noise.start(now);
+    noise.stop(now + 2.3);
+    rumble.start(now);
+    rumble.stop(now + 2.08);
+    return true;
+  }
+
+  async function playClick(force = false) {
+    if (!enabled && !force) return false;
+    const nowMs = performance.now();
+    if (nowMs - lastClick < 140) return false;
+    lastClick = nowMs;
+
+    const context = await resumeAudio();
+    if (!context || context.state !== 'running') return false;
+
+    const now = context.currentTime;
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+
+    oscillator.type = 'triangle';
+    oscillator.frequency.setValueAtTime(720, now);
+    oscillator.frequency.exponentialRampToValueAtTime(260, now + 0.12);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.035, now + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+    oscillator.connect(gain);
+    gain.connect(context.destination);
+    oscillator.start(now);
+    oscillator.stop(now + 0.15);
+    return true;
+  }
+
+  function createToggle() {
+    const button = document.createElement('button');
+    button.className = 'sound-toggle';
+    button.type = 'button';
+    button.id = 'soundToggle';
+    button.innerHTML = '<span class="sound-toggle-icon" aria-hidden="true"></span><span class="sound-toggle-text">Sound</span>';
+    updateButton(button);
+
+    button.addEventListener('click', () => {
+      enabled = !enabled;
+      savePreference();
+      updateButton(button);
+      if (enabled) playClick(true);
+    });
+
+    document.body.append(button);
+  }
+
+  document.addEventListener('pointerdown', () => {
+    if (enabled) resumeAudio();
+  }, { passive: true });
+
+  document.addEventListener('click', (event) => {
+    if (!enabled || event.target.closest('#soundToggle')) return;
+    if (event.target.closest('a, button')) playClick();
+  }, true);
+
+  window.GODTIERPH_SFX = {
+    playThunder,
+    playClick,
+    isEnabled: () => enabled,
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createToggle, { once: true });
+  } else {
+    createToggle();
+  }
+}());
+
 (function initNeonLightningBackground() {
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   if (motionQuery?.matches) return;
@@ -195,6 +367,7 @@ document.addEventListener('click', (event) => {
   function triggerCloudFlash(now) {
     if (now - lastCloudFlash < 1500) return;
     lastCloudFlash = now;
+    window.GODTIERPH_SFX?.playThunder?.(0.72);
     document.body.classList.remove('thunder-flash');
     window.requestAnimationFrame(() => {
       document.body.classList.add('thunder-flash');
@@ -954,7 +1127,6 @@ if (partyList || partySearchForm) {
   const homePath = window.location.pathname.replace(/\/index\.html$/i, '/') || '/';
   const isHomePage = homePath === '/';
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
 
   function getSessionFlag(key) {
     try {
@@ -1001,72 +1173,14 @@ if (partyList || partySearchForm) {
     window.setTimeout(() => overlay.remove(), 2300);
   }
 
-  function buildNoiseBuffer(context, duration) {
-    const sampleCount = Math.floor(context.sampleRate * duration);
-    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
-    const data = buffer.getChannelData(0);
-    let last = 0;
-
-    for (let i = 0; i < sampleCount; i += 1) {
-      const progress = i / sampleCount;
-      const envelope = Math.pow(1 - progress, 2.4);
-      last = (last * 0.86) + ((Math.random() * 2 - 1) * 0.14);
-      data[i] = last * envelope;
+  function playThunder() {
+    if (!window.GODTIERPH_SFX?.isEnabled?.() || (!isHomePage && getSessionFlag(thunderKey))) {
+      return Promise.resolve(false);
     }
 
-    return buffer;
-  }
-
-  function playThunder() {
-    if (!AudioContextCtor || (!isHomePage && getSessionFlag(thunderKey))) return Promise.resolve(false);
-
-    const context = new AudioContextCtor();
-    const startSound = () => {
-      const now = context.currentTime;
-      const master = context.createGain();
-      const lowpass = context.createBiquadFilter();
-      const rumble = context.createOscillator();
-      const rumbleGain = context.createGain();
-      const noise = context.createBufferSource();
-
-      master.gain.setValueAtTime(0.0001, now);
-      master.gain.exponentialRampToValueAtTime(0.42, now + 0.08);
-      master.gain.exponentialRampToValueAtTime(0.0001, now + 2.35);
-
-      lowpass.type = 'lowpass';
-      lowpass.frequency.setValueAtTime(520, now);
-      lowpass.frequency.exponentialRampToValueAtTime(85, now + 2.1);
-      lowpass.Q.setValueAtTime(0.8, now);
-
-      noise.buffer = buildNoiseBuffer(context, 2.45);
-      noise.connect(lowpass);
-      lowpass.connect(master);
-
-      rumble.type = 'sine';
-      rumble.frequency.setValueAtTime(58, now);
-      rumble.frequency.exponentialRampToValueAtTime(31, now + 2.2);
-      rumbleGain.gain.setValueAtTime(0.0001, now);
-      rumbleGain.gain.exponentialRampToValueAtTime(0.28, now + 0.16);
-      rumbleGain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
-      rumble.connect(rumbleGain);
-      rumbleGain.connect(master);
-
-      master.connect(context.destination);
-      noise.start(now);
-      noise.stop(now + 2.45);
-      rumble.start(now);
-      rumble.stop(now + 2.25);
-      if (!isHomePage) setSessionFlag(thunderKey);
-      window.setTimeout(() => context.close?.(), 2800);
-      return true;
-    };
-
-    if (context.state === 'running') return Promise.resolve(startSound());
-
-    return context.resume().then(() => {
-      if (context.state !== 'running') throw new Error('Audio is blocked');
-      return startSound();
-    });
+    const thunderAttempt = window.GODTIERPH_SFX.playThunder?.(1);
+    if (!isHomePage) setSessionFlag(thunderKey);
+    return Promise.resolve(thunderAttempt).then(Boolean);
   }
 
   function armGestureFallback() {
