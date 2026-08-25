@@ -214,6 +214,20 @@ document.addEventListener('click', (event) => {
     return buffer;
   }
 
+  function buildSnapBuffer(context, duration) {
+    const sampleCount = Math.floor(context.sampleRate * duration);
+    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
+    const data = buffer.getChannelData(0);
+
+    for (let index = 0; index < sampleCount; index += 1) {
+      const progress = index / sampleCount;
+      const envelope = Math.pow(1 - progress, 8);
+      data[index] = (Math.random() * 2 - 1) * envelope;
+    }
+
+    return buffer;
+  }
+
   function randomBetween(min, max) {
     return min + Math.random() * (max - min);
   }
@@ -319,27 +333,62 @@ document.addEventListener('click', (event) => {
   async function playClick(force = false, intensity = 1) {
     if (!enabled && !force) return false;
     const nowMs = performance.now();
-    if (nowMs - lastClick < 140) return false;
+    if (nowMs - lastClick < 95) return false;
     lastClick = nowMs;
 
     const context = await resumeAudio();
     if (!context || context.state !== 'running') return false;
 
     const now = context.currentTime;
-    const oscillator = context.createOscillator();
-    const gain = context.createGain();
-    const peak = Math.min(0.055, Math.max(0.026, 0.04 * intensity));
+    const master = context.createGain();
+    const tick = context.createOscillator();
+    const tickGain = context.createGain();
+    const clack = context.createOscillator();
+    const clackGain = context.createGain();
+    const snap = context.createBufferSource();
+    const snapFilter = context.createBiquadFilter();
+    const snapGain = context.createGain();
+    const peak = Math.min(0.11, Math.max(0.052, 0.075 * intensity));
 
-    oscillator.type = 'triangle';
-    oscillator.frequency.setValueAtTime(860, now);
-    oscillator.frequency.exponentialRampToValueAtTime(280, now + 0.13);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(peak, now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
-    oscillator.connect(gain);
-    gain.connect(context.destination);
-    oscillator.start(now);
-    oscillator.stop(now + 0.15);
+    master.gain.setValueAtTime(0.82, now);
+
+    tick.type = 'square';
+    tick.frequency.setValueAtTime(2600, now);
+    tick.frequency.exponentialRampToValueAtTime(1320, now + 0.035);
+    tickGain.gain.setValueAtTime(0.0001, now);
+    tickGain.gain.exponentialRampToValueAtTime(peak * 0.82, now + 0.004);
+    tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
+
+    clack.type = 'square';
+    clack.frequency.setValueAtTime(540, now + 0.012);
+    clack.frequency.exponentialRampToValueAtTime(190, now + 0.075);
+    clackGain.gain.setValueAtTime(0.0001, now);
+    clackGain.gain.setValueAtTime(0.0001, now + 0.012);
+    clackGain.gain.exponentialRampToValueAtTime(peak, now + 0.018);
+    clackGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+    snap.buffer = buildSnapBuffer(context, 0.055);
+    snapFilter.type = 'bandpass';
+    snapFilter.frequency.setValueAtTime(2100, now);
+    snapFilter.Q.setValueAtTime(6.5, now);
+    snapGain.gain.setValueAtTime(0.0001, now);
+    snapGain.gain.exponentialRampToValueAtTime(peak * 0.42, now + 0.003);
+    snapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.052);
+
+    tick.connect(tickGain);
+    clack.connect(clackGain);
+    snap.connect(snapFilter);
+    snapFilter.connect(snapGain);
+    tickGain.connect(master);
+    clackGain.connect(master);
+    snapGain.connect(master);
+    master.connect(context.destination);
+    tick.start(now);
+    tick.stop(now + 0.05);
+    clack.start(now + 0.012);
+    clack.stop(now + 0.095);
+    snap.start(now);
+    snap.stop(now + 0.056);
     return true;
   }
 
@@ -353,34 +402,41 @@ document.addEventListener('click', (event) => {
     if (!context || context.state !== 'running') return false;
 
     const now = context.currentTime;
-    const primary = context.createOscillator();
-    const overtone = context.createOscillator();
-    const primaryGain = context.createGain();
-    const overtoneGain = context.createGain();
-    const peak = Math.min(0.038, Math.max(0.018, 0.026 * intensity));
+    const master = context.createGain();
+    const tick = context.createOscillator();
+    const tickGain = context.createGain();
+    const edge = context.createBufferSource();
+    const edgeFilter = context.createBiquadFilter();
+    const edgeGain = context.createGain();
+    const peak = Math.min(0.065, Math.max(0.028, 0.043 * intensity));
 
-    primary.type = 'sine';
-    primary.frequency.setValueAtTime(520, now);
-    primary.frequency.exponentialRampToValueAtTime(780, now + 0.1);
-    primaryGain.gain.setValueAtTime(0.0001, now);
-    primaryGain.gain.exponentialRampToValueAtTime(peak, now + 0.018);
-    primaryGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+    master.gain.setValueAtTime(0.78, now);
 
-    overtone.type = 'triangle';
-    overtone.frequency.setValueAtTime(1040, now);
-    overtone.frequency.exponentialRampToValueAtTime(1320, now + 0.11);
-    overtoneGain.gain.setValueAtTime(0.0001, now);
-    overtoneGain.gain.exponentialRampToValueAtTime(peak * 0.44, now + 0.02);
-    overtoneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.13);
+    tick.type = 'square';
+    tick.frequency.setValueAtTime(2300, now);
+    tick.frequency.exponentialRampToValueAtTime(1450, now + 0.045);
+    tickGain.gain.setValueAtTime(0.0001, now);
+    tickGain.gain.exponentialRampToValueAtTime(peak, now + 0.005);
+    tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
 
-    primary.connect(primaryGain);
-    overtone.connect(overtoneGain);
-    primaryGain.connect(context.destination);
-    overtoneGain.connect(context.destination);
-    primary.start(now);
-    overtone.start(now);
-    primary.stop(now + 0.17);
-    overtone.stop(now + 0.14);
+    edge.buffer = buildSnapBuffer(context, 0.045);
+    edgeFilter.type = 'bandpass';
+    edgeFilter.frequency.setValueAtTime(2850, now);
+    edgeFilter.Q.setValueAtTime(7, now);
+    edgeGain.gain.setValueAtTime(0.0001, now);
+    edgeGain.gain.exponentialRampToValueAtTime(peak * 0.5, now + 0.004);
+    edgeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+    tick.connect(tickGain);
+    edge.connect(edgeFilter);
+    edgeFilter.connect(edgeGain);
+    tickGain.connect(master);
+    edgeGain.connect(master);
+    master.connect(context.destination);
+    tick.start(now);
+    tick.stop(now + 0.065);
+    edge.start(now);
+    edge.stop(now + 0.046);
     return true;
   }
 
