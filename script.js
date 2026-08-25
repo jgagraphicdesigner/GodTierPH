@@ -81,11 +81,14 @@ document.addEventListener('click', (event) => {
   const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
   const storageKey = 'godtierphSoundEffectsEnabled';
   const musicSource = '/assets/audio/storm-background.mp3';
+  const uiClickSource = '/assets/audio/gear-click.mp3';
   const musicVolume = 0.16;
   let audioContext = null;
   let musicAudio = null;
   let musicFadeTimer = null;
   let musicStartedThisPage = false;
+  let uiClickAudio = null;
+  let uiClickResetTimer = null;
   let enabled = false;
   let lastThunder = 0;
   let lastClick = 0;
@@ -144,6 +147,46 @@ document.addEventListener('click', (event) => {
     musicAudio.preload = 'auto';
     musicAudio.volume = 0;
     return musicAudio;
+  }
+
+  function getUiClickAudio() {
+    if (typeof Audio === 'undefined') return null;
+    if (uiClickAudio) return uiClickAudio;
+
+    uiClickAudio = new Audio(uiClickSource);
+    uiClickAudio.preload = 'auto';
+    uiClickAudio.volume = 0.72;
+    return uiClickAudio;
+  }
+
+  async function playUiClickSample(force = false, volume = 0.72) {
+    if (!enabled && !force) return false;
+    const audio = getUiClickAudio();
+    if (!audio) return false;
+
+    window.clearTimeout(uiClickResetTimer);
+    audio.pause();
+    try {
+      audio.currentTime = 0;
+    } catch (error) {
+      // Some browsers can reject seeking before metadata is ready.
+    }
+    audio.volume = Math.min(1, Math.max(0, volume));
+
+    try {
+      await audio.play();
+      uiClickResetTimer = window.setTimeout(() => {
+        audio.pause();
+        try {
+          audio.currentTime = 0;
+        } catch (error) {
+          // Keep the next click graceful if seeking is blocked.
+        }
+      }, 850);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   function fadeMusic(targetVolume, duration = 700) {
@@ -215,20 +258,6 @@ document.addEventListener('click', (event) => {
       const envelope = Math.pow(1 - progress, 2.6);
       last = (last * 0.88) + ((Math.random() * 2 - 1) * 0.12);
       data[index] = last * envelope;
-    }
-
-    return buffer;
-  }
-
-  function buildSnapBuffer(context, duration) {
-    const sampleCount = Math.floor(context.sampleRate * duration);
-    const buffer = context.createBuffer(1, sampleCount, context.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    for (let index = 0; index < sampleCount; index += 1) {
-      const progress = index / sampleCount;
-      const envelope = Math.pow(1 - progress, 8);
-      data[index] = (Math.random() * 2 - 1) * envelope;
     }
 
     return buffer;
@@ -341,61 +370,7 @@ document.addEventListener('click', (event) => {
     const nowMs = performance.now();
     if (nowMs - lastClick < 95) return false;
     lastClick = nowMs;
-
-    const context = await resumeAudio();
-    if (!context || context.state !== 'running') return false;
-
-    const now = context.currentTime;
-    const master = context.createGain();
-    const tick = context.createOscillator();
-    const tickGain = context.createGain();
-    const clack = context.createOscillator();
-    const clackGain = context.createGain();
-    const snap = context.createBufferSource();
-    const snapFilter = context.createBiquadFilter();
-    const snapGain = context.createGain();
-    const peak = Math.min(0.11, Math.max(0.052, 0.075 * intensity));
-
-    master.gain.setValueAtTime(0.82, now);
-
-    tick.type = 'square';
-    tick.frequency.setValueAtTime(2600, now);
-    tick.frequency.exponentialRampToValueAtTime(1320, now + 0.035);
-    tickGain.gain.setValueAtTime(0.0001, now);
-    tickGain.gain.exponentialRampToValueAtTime(peak * 0.82, now + 0.004);
-    tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
-
-    clack.type = 'square';
-    clack.frequency.setValueAtTime(540, now + 0.012);
-    clack.frequency.exponentialRampToValueAtTime(190, now + 0.075);
-    clackGain.gain.setValueAtTime(0.0001, now);
-    clackGain.gain.setValueAtTime(0.0001, now + 0.012);
-    clackGain.gain.exponentialRampToValueAtTime(peak, now + 0.018);
-    clackGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
-
-    snap.buffer = buildSnapBuffer(context, 0.055);
-    snapFilter.type = 'bandpass';
-    snapFilter.frequency.setValueAtTime(2100, now);
-    snapFilter.Q.setValueAtTime(6.5, now);
-    snapGain.gain.setValueAtTime(0.0001, now);
-    snapGain.gain.exponentialRampToValueAtTime(peak * 0.42, now + 0.003);
-    snapGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.052);
-
-    tick.connect(tickGain);
-    clack.connect(clackGain);
-    snap.connect(snapFilter);
-    snapFilter.connect(snapGain);
-    tickGain.connect(master);
-    clackGain.connect(master);
-    snapGain.connect(master);
-    master.connect(context.destination);
-    tick.start(now);
-    tick.stop(now + 0.05);
-    clack.start(now + 0.012);
-    clack.stop(now + 0.095);
-    snap.start(now);
-    snap.stop(now + 0.056);
-    return true;
+    return playUiClickSample(force, Math.min(0.9, Math.max(0.58, 0.72 * intensity)));
   }
 
   async function playMenuHighlight(force = false, intensity = 1) {
@@ -403,47 +378,7 @@ document.addEventListener('click', (event) => {
     const nowMs = performance.now();
     if (!force && nowMs - lastMenuTone < 240) return false;
     lastMenuTone = nowMs;
-
-    const context = await resumeAudio();
-    if (!context || context.state !== 'running') return false;
-
-    const now = context.currentTime;
-    const master = context.createGain();
-    const tick = context.createOscillator();
-    const tickGain = context.createGain();
-    const edge = context.createBufferSource();
-    const edgeFilter = context.createBiquadFilter();
-    const edgeGain = context.createGain();
-    const peak = Math.min(0.065, Math.max(0.028, 0.043 * intensity));
-
-    master.gain.setValueAtTime(0.78, now);
-
-    tick.type = 'square';
-    tick.frequency.setValueAtTime(2300, now);
-    tick.frequency.exponentialRampToValueAtTime(1450, now + 0.045);
-    tickGain.gain.setValueAtTime(0.0001, now);
-    tickGain.gain.exponentialRampToValueAtTime(peak, now + 0.005);
-    tickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
-
-    edge.buffer = buildSnapBuffer(context, 0.045);
-    edgeFilter.type = 'bandpass';
-    edgeFilter.frequency.setValueAtTime(2850, now);
-    edgeFilter.Q.setValueAtTime(7, now);
-    edgeGain.gain.setValueAtTime(0.0001, now);
-    edgeGain.gain.exponentialRampToValueAtTime(peak * 0.5, now + 0.004);
-    edgeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
-
-    tick.connect(tickGain);
-    edge.connect(edgeFilter);
-    edgeFilter.connect(edgeGain);
-    tickGain.connect(master);
-    edgeGain.connect(master);
-    master.connect(context.destination);
-    tick.start(now);
-    tick.stop(now + 0.065);
-    edge.start(now);
-    edge.stop(now + 0.046);
-    return true;
+    return playUiClickSample(force, Math.min(0.78, Math.max(0.48, 0.62 * intensity)));
   }
 
   function createToggle() {
