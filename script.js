@@ -254,7 +254,7 @@ document.addEventListener('click', (event) => {
     document.body.append(overlay);
     window.setTimeout(() => overlay.remove(), 1500);
 
-    if (options.sound !== false) {
+    if (options.sound === true) {
       playThunder(Math.min(1.15, Math.max(0.55, intensity))).catch(() => {});
     }
 
@@ -585,7 +585,6 @@ document.addEventListener('click', (event) => {
   function triggerCloudFlash(now) {
     if (now - lastCloudFlash < 1500) return;
     lastCloudFlash = now;
-    window.GODTIERPH_SFX?.playThunder?.(0.72);
     document.body.classList.remove('thunder-flash');
     window.requestAnimationFrame(() => {
       document.body.classList.add('thunder-flash');
@@ -1341,7 +1340,6 @@ if (partyList || partySearchForm) {
 
 (function initStormIntro() {
   const seenKey = 'godtierphStormIntroSeen';
-  const thunderKey = 'godtierphThunderPlayed';
   const homePath = window.location.pathname.replace(/\/index\.html$/i, '/') || '/';
   const isHomePage = homePath === '/';
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
@@ -1391,44 +1389,8 @@ if (partyList || partySearchForm) {
     window.setTimeout(() => overlay.remove(), 2300);
   }
 
-  function playThunder() {
-    if (!window.GODTIERPH_SFX?.isEnabled?.() || (!isHomePage && getSessionFlag(thunderKey))) {
-      return Promise.resolve(false);
-    }
-
-    const thunderAttempt = window.GODTIERPH_SFX.playThunder?.(1);
-    if (!isHomePage) setSessionFlag(thunderKey);
-    return Promise.resolve(thunderAttempt).then(Boolean);
-  }
-
-  function armGestureFallback() {
-    const options = { once: true, passive: true };
-    const playAfterGesture = () => {
-      playThunder().catch(() => {});
-    };
-
-    document.addEventListener('pointerdown', playAfterGesture, options);
-    document.addEventListener('touchstart', playAfterGesture, options);
-    document.addEventListener('keydown', playAfterGesture, { once: true });
-  }
-
   function startStorm() {
     runLightning();
-    if (!isHomePage && getSessionFlag(thunderKey)) return;
-
-    window.setTimeout(() => {
-      const thunderAttempt = playThunder();
-      const blockedTimer = window.setTimeout(armGestureFallback, 450);
-      thunderAttempt
-        .then((played) => {
-          window.clearTimeout(blockedTimer);
-          if (!played) armGestureFallback();
-        })
-        .catch(() => {
-          window.clearTimeout(blockedTimer);
-          armGestureFallback();
-        });
-    }, 180);
   }
 
   if (document.readyState === 'loading') {
