@@ -109,6 +109,49 @@ document.addEventListener('click', (event) => {
   });
 }());
 
+(function initImageLightbox() {
+  const lightbox = document.getElementById('imageLightbox');
+  const lightboxImage = document.getElementById('imageLightboxImage');
+  const lightboxPanel = lightbox?.querySelector('.image-lightbox-panel');
+  const lightboxTriggers = document.querySelectorAll('[data-lightbox-src]');
+  let lastFocusedTrigger = null;
+
+  if (!lightbox || !lightboxImage || !lightboxPanel || !lightboxTriggers.length) return;
+
+  function openLightbox(trigger) {
+    const src = trigger.dataset.lightboxSrc;
+    if (!src) return;
+
+    lastFocusedTrigger = trigger;
+    lightboxImage.src = src;
+    lightboxImage.alt = trigger.dataset.lightboxAlt || trigger.querySelector('img')?.alt || 'Enlarged image preview';
+    lightbox.hidden = false;
+    document.body.classList.add('modal-open');
+    lightboxPanel.focus();
+  }
+
+  function closeLightbox() {
+    if (lightbox.hidden) return;
+
+    lightbox.hidden = true;
+    document.body.classList.remove('modal-open');
+    lightboxImage.removeAttribute('src');
+    lastFocusedTrigger?.focus();
+  }
+
+  lightboxTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => openLightbox(trigger));
+  });
+
+  lightbox.querySelectorAll('[data-close-lightbox]').forEach((control) => {
+    control.addEventListener('click', closeLightbox);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !lightbox.hidden) closeLightbox();
+  });
+}());
+
 const partyList = document.getElementById('partyList');
 const partyListStatus = document.getElementById('partyListStatus');
 const refreshPartyList = document.getElementById('refreshPartyList');

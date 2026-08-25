@@ -8,7 +8,7 @@
   <title>GodTierPH | Guild Hub</title>
   <link rel="icon" type="image/png" href="assets/godtierph-icon.png" />
   <link rel="preload" as="image" href="assets/home-hero.png" />
-  <link rel="stylesheet" href="styles.css?v=server-league-status-1" />
+  <link rel="stylesheet" href="styles.css?v=home-lightbox-1" />
 </head>
 <body>
   <header class="topbar">
@@ -96,7 +96,9 @@
         </article>
         <article class="info-card accent-gold home-raffle-card">
           <figure class="home-raffle-image">
-            <img src="assets/raffles/wynnnn-august-23-2026.png" alt="Wynnnn profile screenshot, latest weekly raffle winner" loading="lazy" />
+            <button class="image-lightbox-trigger" type="button" data-lightbox-src="assets/raffles/wynnnn-august-23-2026.png" data-lightbox-alt="Wynnnn profile screenshot, latest weekly raffle winner">
+              <img src="assets/raffles/wynnnn-august-23-2026.png" alt="Wynnnn profile screenshot, latest weekly raffle winner" loading="lazy" />
+            </button>
           </figure>
           <div class="home-raffle-copy">
             <span class="card-kicker">Latest Raffle Winner</span>
@@ -128,10 +130,14 @@
       </div>
       <div class="league-update-gallery">
         <figure class="league-update-shot">
-          <img src="assets/guild-league-server-league-august-2026.png" alt="Server League ranking screen showing GodTierPH listed on the Transcendent Master board." loading="lazy" />
+          <button class="image-lightbox-trigger" type="button" data-lightbox-src="assets/guild-league-server-league-august-2026.png" data-lightbox-alt="Server League ranking screen showing GodTierPH listed on the Transcendent Master board.">
+            <img src="assets/guild-league-server-league-august-2026.png" alt="Server League ranking screen showing GodTierPH listed on the Transcendent Master board." loading="lazy" />
+          </button>
         </figure>
         <figure class="league-update-shot">
-          <img src="assets/guild-league-server-league-bracket-august-25-2026.png" alt="Server League preliminary bracket showing GodTierPH matched against GhostProjectPH." loading="lazy" />
+          <button class="image-lightbox-trigger" type="button" data-lightbox-src="assets/guild-league-server-league-bracket-august-25-2026.png" data-lightbox-alt="Server League preliminary bracket showing GodTierPH matched against GhostProjectPH.">
+            <img src="assets/guild-league-server-league-bracket-august-25-2026.png" alt="Server League preliminary bracket showing GodTierPH matched against GhostProjectPH." loading="lazy" />
+          </button>
         </figure>
       </div>
       <div class="league-update-strip" aria-label="Guild League update summary">
@@ -142,6 +148,14 @@
       </div>
     </section>
   </main>
+
+  <div class="image-lightbox" id="imageLightbox" hidden>
+    <button class="image-lightbox-backdrop" type="button" data-close-lightbox aria-label="Close enlarged image"></button>
+    <div class="image-lightbox-panel" role="dialog" aria-modal="true" aria-label="Enlarged image preview" tabindex="-1">
+      <button class="image-lightbox-close" type="button" data-close-lightbox aria-label="Close enlarged image">Close</button>
+      <img id="imageLightboxImage" src="" alt="" />
+    </div>
+  </div>
 
   <footer class="site-footer" aria-label="Site footer">
     <div class="site-footer-inner">
@@ -188,6 +202,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=presence-1"></script>
+  <script src="script.js?v=home-lightbox-1"></script>
 </body>
 </html>

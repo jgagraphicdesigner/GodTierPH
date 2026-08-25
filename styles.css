@@ -147,6 +147,10 @@ h3{font-size:1.18rem;letter-spacing:0}
 .home-raffle-copy{display:grid;gap:10px;padding:20px 22px 22px}
 .home-raffle-copy h3{font-size:clamp(1.65rem,2.5vw,2.2rem)}
 .home-raffle-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.image-lightbox-trigger{display:block;width:100%;border:0;background:transparent;padding:0;color:inherit;cursor:zoom-in}
+.image-lightbox-trigger img{transition:transform .22s ease,filter .22s ease}
+.image-lightbox-trigger:hover img,.image-lightbox-trigger:focus-visible img{transform:scale(1.018);filter:brightness(1.08) saturate(1.06)}
+.image-lightbox-trigger:focus-visible{outline:2px solid #56b6ff;outline-offset:-4px}
 .league-update-section{padding-top:54px}
 .league-update-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px;align-items:end;margin-bottom:22px}
 .league-update-heading p:last-child{max-width:760px;color:#d1c8bd;font-size:1.05rem}
@@ -285,6 +289,13 @@ h3{font-size:1.18rem;letter-spacing:0}
 .loading-row,.empty-row{border:1px dashed #3a4552;border-radius:8px;padding:20px;color:#cabfb1;background:#0e131a}
 .error-row{border:1px solid rgba(255,105,93,.55);border-radius:8px;padding:20px;color:#ffaaa3;background:rgba(255,105,93,.08)}
 body.modal-open{overflow:hidden}
+.image-lightbox[hidden]{display:none!important}
+.image-lightbox{position:fixed;inset:0;z-index:210;display:grid;place-items:center;padding:22px}
+.image-lightbox-backdrop{position:absolute;inset:0;border:0;background:rgba(2,5,10,.82);backdrop-filter:blur(10px);cursor:pointer}
+.image-lightbox-panel{position:relative;z-index:1;display:grid;gap:12px;width:min(1380px,calc(100vw - 44px));max-height:calc(100vh - 44px);outline:none}
+.image-lightbox-panel img{display:block;justify-self:center;max-width:100%;max-height:calc(100vh - 108px);object-fit:contain;border:1px solid rgba(86,182,255,.4);border-radius:8px;background:#05080d;box-shadow:0 28px 90px rgba(0,0,0,.76),0 0 42px rgba(78,168,255,.2)}
+.image-lightbox-close{justify-self:end;min-height:36px;border:1px solid rgba(86,182,255,.44);border-radius:8px;background:rgba(12,18,27,.96);color:#f5f0e8;padding:7px 12px;font:inherit;font-size:.82rem;font-weight:800;cursor:pointer;box-shadow:0 12px 32px rgba(0,0,0,.34)}
+.image-lightbox-close:hover,.image-lightbox-close:focus-visible{border-color:#56b6ff;color:#9fe8ff;outline:none;text-shadow:0 0 10px rgba(86,182,255,.55)}
 .party-lookup-modal[hidden]{display:none!important}
 .party-lookup-modal{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:22px}
 .party-lookup-backdrop{position:absolute;inset:0;border:0;background:rgba(3,6,10,.76);backdrop-filter:blur(8px);cursor:pointer}
@@ -525,6 +536,9 @@ body.modal-open{overflow:hidden}
   .party-search{padding:14px}
   .party-search-row{grid-template-columns:1fr}
   .party-search-row .btn{width:100%}
+  .image-lightbox{padding:12px}
+  .image-lightbox-panel{width:calc(100vw - 24px);max-height:calc(100vh - 24px)}
+  .image-lightbox-panel img{max-height:calc(100vh - 90px)}
   .party-lookup-modal{padding:12px}
   .party-lookup-card{width:calc(100vw - 24px);max-height:calc(100vh - 24px);padding:14px}
   .party-lookup-card h2{margin-right:0;font-size:2rem}
