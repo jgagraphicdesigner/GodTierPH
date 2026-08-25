@@ -482,9 +482,15 @@ body.modal-open{overflow:hidden}
 .storm-bolt{--bolt-left:70%;--bolt-delay:0s;position:absolute;top:-8vh;left:var(--bolt-left);width:clamp(92px,10vw,180px);height:64vh;opacity:0;filter:drop-shadow(0 0 14px rgba(120,215,255,.95)) drop-shadow(0 0 34px rgba(78,168,255,.55));animation:storm-bolt-strike 1.35s var(--bolt-delay) cubic-bezier(.18,.78,.28,1) forwards}
 .storm-bolt span{position:absolute;top:calc(var(--segment-index) * 18%);left:calc(46% + (var(--segment-index) % 2) * 18%);width:5px;height:23%;border-radius:999px;background:linear-gradient(180deg,#fff,#aee9ff 44%,rgba(78,168,255,.15));box-shadow:0 0 10px #fff,0 0 28px rgba(78,168,255,.86);transform:rotate(calc(-24deg + var(--segment-index) * 13deg));transform-origin:top center}
 .storm-bolt span:nth-child(even){left:calc(27% + var(--segment-index) * 5%);transform:rotate(calc(25deg - var(--segment-index) * 10deg))}
+.storm-overlay.storm-burst{z-index:9998;animation:storm-burst-life 1.4s ease-out forwards}
+.storm-overlay.storm-burst:before,.storm-overlay.storm-burst:after{background:radial-gradient(circle at 68% 8%,rgba(111,205,255,.48),transparent 20%),linear-gradient(180deg,rgba(56,172,255,.28),rgba(255,255,255,.05) 28%,transparent 60%);animation:storm-burst-flash 1.22s ease-out forwards}
+.storm-overlay.storm-burst:after{animation-delay:.18s;background:radial-gradient(circle at 32% 2%,rgba(182,235,255,.42),transparent 24%),linear-gradient(180deg,rgba(85,194,255,.2),transparent 56%)}
+.storm-overlay.storm-burst .storm-bolt{height:52vh;width:clamp(70px,8vw,145px);filter:drop-shadow(0 0 12px rgba(120,215,255,.86)) drop-shadow(0 0 28px rgba(78,168,255,.42));animation-duration:1.05s}
 @keyframes storm-overlay-life{0%,82%{opacity:1}100%{opacity:0}}
 @keyframes storm-flash{0%,13%,100%{opacity:0}5%{opacity:.96}9%{opacity:.16}18%{opacity:.52}23%{opacity:0}36%{opacity:.34}42%{opacity:0}}
 @keyframes storm-bolt-strike{0%,7%,100%{opacity:0;transform:translate3d(-8px,-16px,0) scaleY(.92)}8%,16%{opacity:1;transform:translate3d(0,0,0) scaleY(1)}22%{opacity:.2}31%{opacity:.85;transform:translate3d(8px,6px,0) scaleY(1.04)}44%{opacity:0}}
+@keyframes storm-burst-life{0%,78%{opacity:1}100%{opacity:0}}
+@keyframes storm-burst-flash{0%,100%{opacity:0}7%{opacity:.62}12%{opacity:.08}24%{opacity:.32}32%{opacity:0}}
 @keyframes electric-cloud-drift{0%{transform:translate3d(-1.2%,.4%,0) scale(1.04);opacity:.06}42%{opacity:.1}100%{transform:translate3d(1.4%,-.8%,0) scale(1.08);opacity:.075}}
 @keyframes thunder-cloud-drift{0%{transform:translate3d(-1.8%,.6%,0) scale(1.02);background-position:0 0,52% 4%,100% 8%,18% 100%,88% 92%}100%{transform:translate3d(1.6%,-.8%,0) scale(1.06);background-position:6% 5%,48% 0,94% 13%,24% 94%,82% 86%}}
 @keyframes thunder-cloud-glow{0%,72%,100%{opacity:0}76%{opacity:.1}80%{opacity:.035}}

@@ -84,6 +84,8 @@ document.addEventListener('click', (event) => {
   let enabled = false;
   let lastThunder = 0;
   let lastClick = 0;
+  let lastBurst = 0;
+  const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   const clickSelector = [
     'a',
     'button',
@@ -139,6 +141,53 @@ document.addEventListener('click', (event) => {
     }
 
     return buffer;
+  }
+
+  function randomBetween(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  function createStormBolt(left, delay) {
+    const bolt = document.createElement('div');
+    bolt.className = 'storm-bolt';
+    bolt.style.setProperty('--bolt-left', left);
+    bolt.style.setProperty('--bolt-delay', delay);
+
+    for (let index = 0; index < 5; index += 1) {
+      const segment = document.createElement('span');
+      segment.style.setProperty('--segment-index', index);
+      bolt.append(segment);
+    }
+
+    return bolt;
+  }
+
+  function triggerStormBurst(intensity = 1, options = {}) {
+    const forceVisual = Boolean(options.forceVisual);
+    if (motionQuery?.matches || (!enabled && !forceVisual)) return false;
+
+    const nowMs = performance.now();
+    const cooldown = options.force ? 0 : 2800;
+    if (nowMs - lastBurst < cooldown) return false;
+    lastBurst = nowMs;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'storm-overlay storm-burst';
+    overlay.setAttribute('aria-hidden', 'true');
+    overlay.append(createStormBolt(`${randomBetween(18, 82).toFixed(1)}%`, '0s'));
+
+    if (intensity > 0.85 || Math.random() > 0.46) {
+      overlay.append(createStormBolt(`${randomBetween(20, 86).toFixed(1)}%`, '.18s'));
+    }
+
+    document.body.append(overlay);
+    window.setTimeout(() => overlay.remove(), 1500);
+
+    if (options.sound !== false) {
+      playThunder(Math.min(1.15, Math.max(0.55, intensity))).catch(() => {});
+    }
+
+    return true;
   }
 
   function updateButton(button) {
@@ -236,7 +285,10 @@ document.addEventListener('click', (event) => {
       enabled = !enabled;
       savePreference();
       updateButton(button);
-      if (enabled) playClick(true, 1.25);
+      if (enabled) {
+        playClick(true, 1.25);
+        triggerStormBurst(1.08, { force: true });
+      }
     });
 
     document.body.append(button);
@@ -250,12 +302,17 @@ document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     if (!enabled || !target || target.closest('#soundToggle')) return;
     const control = target.closest(clickSelector);
-    if (control) playClick(false, control.matches('a') ? 0.82 : 1);
+    if (control) {
+      const isButtonLike = control.matches('button, .btn, [role="button"], input[type="button"], input[type="submit"], input[type="reset"], summary, .party-lookup-close, .image-lightbox-close, .party-search-suggestion');
+      playClick(false, isButtonLike ? 1.05 : 0.82);
+      if (isButtonLike) triggerStormBurst(0.78);
+    }
   }, true);
 
   window.GODTIERPH_SFX = {
     playThunder,
     playClick,
+    triggerStormBurst,
     isEnabled: () => enabled,
   };
 
