@@ -149,6 +149,10 @@ h3{font-size:1.18rem;letter-spacing:0}
 .quick-link:hover{transform:translateY(-2px);border-color:#566272}
 .quick-link strong{display:block;margin-bottom:6px;color:white}
 .quick-link span,.info-card p,.role-card p,.class-card li,.step-card li,.event-row p,.contact-card p{color:#c4baad}
+.guide-index-grid{display:grid;grid-template-columns:minmax(0,760px);gap:16px}
+.guide-index-grid .quick-link{min-height:128px;display:flex;flex-direction:column;justify-content:center}
+.guide-index-grid .quick-link strong{font-size:1.25rem}
+.guide-index-grid .quick-link span{max-width:560px}
 .media-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 .media-card{overflow:hidden}
 .raffle-result-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;margin-top:18px;align-items:stretch}
