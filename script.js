@@ -1107,7 +1107,7 @@ function openPartyLookup(query) {
 
   if (!matches.length) {
     partyLookupTitle.textContent = 'No party assignment found';
-    partyLookupResults.append(textNode('div', 'empty-row', `No roster match found for "${search}". Check the spelling or press Refresh List after the sheet updates.`));
+    partyLookupResults.append(textNode('div', 'empty-row', `No roster match found for "${search}". Check the spelling or press Refresh List after the sheet updates. If you are not listed in Main League, join the Sub League first. Thadz will update the party list once your assignment is confirmed.`));
   } else {
     partyLookupTitle.textContent = `${matches.length} assignment${matches.length === 1 ? '' : 's'} found`;
     matches.forEach((entry) => partyLookupResults.append(renderLookupMatch(entry)));
