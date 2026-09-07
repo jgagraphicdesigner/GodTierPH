@@ -157,11 +157,11 @@ h3{font-size:1.18rem;letter-spacing:0}
 .media-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 .media-card{overflow:hidden}
 .raffle-result-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);gap:18px;margin-top:18px;align-items:stretch}
-.raffle-winner-shot img{display:block;width:100%;height:100%;min-height:360px;object-fit:cover;object-position:center}
+.raffle-winner-shot img{display:block;width:100%;height:auto;min-height:0;object-fit:contain;object-position:center;background:#07101b}
 .raffle-note-card{display:flex;flex-direction:column;justify-content:center;padding:28px}
 .home-raffle-card{overflow:hidden;padding:0}
 .home-raffle-image{margin:0;border-bottom:1px solid rgba(242,193,91,.28);background:#07101b}
-.home-raffle-image img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center}
+.home-raffle-image img{display:block;width:100%;height:auto;object-fit:contain;object-position:center}
 .home-raffle-copy{display:grid;gap:10px;padding:20px 22px 22px}
 .home-raffle-copy h3{font-size:clamp(1.65rem,2.5vw,2.2rem)}
 .home-raffle-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
@@ -303,7 +303,7 @@ h3{font-size:1.18rem;letter-spacing:0}
 .step-card h3,.step-card ul,.step-card p{margin:0}
 .step-card h3{padding:0 30px;font-size:clamp(1.45rem,2vw,2.2rem)}
 .step-figure{order:-1;margin:0;border:0;border-bottom:1px solid #303946;overflow:hidden;background:#0f141b}
-.step-figure img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.step-figure img{display:block;width:100%;height:auto;object-fit:contain}
 .danger{border-color:rgba(255,105,93,.55)}
 .danger .step-no{background:#8e312b;border-color:#ff8277}
 .purple-step{border-color:rgba(177,124,255,.55)}
@@ -568,7 +568,7 @@ body.modal-open{overflow:hidden}
 @media(max-width:1050px){
   .hero,.split-section,.event-row,.media-grid{grid-template-columns:1fr}
   .raffle-result-grid{grid-template-columns:1fr}
-  .raffle-winner-shot img{min-height:260px}
+  .raffle-winner-shot img{min-height:0}
   .setup-grid{grid-template-columns:repeat(2,1fr)}
   .party-grid{grid-template-columns:repeat(2,1fr)}
   .three,.contact-grid,.reminders{grid-template-columns:repeat(2,1fr)}
@@ -606,9 +606,9 @@ body.modal-open{overflow:hidden}
   .section-title,.hero-text,.info-card,.quick-link{max-width:100%;overflow-wrap:break-word}
   .hero{min-height:auto}
   .home-hero{min-height:calc(100vh - 82px);padding:76px 0}
-  .home-hero-bg,.home-hero-video{object-position:62% center}
+  .home-hero-bg,.home-hero-video{object-position:center center}
   .league-hero{min-height:66vh;padding:72px 0}
-  .league-hero-bg{object-position:60% center}
+  .league-hero-bg{object-position:center center}
   h1{font-size:clamp(2.5rem,13vw,4.5rem)}
   .hero-card img{width:130px;height:130px}
   .class-icon-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
@@ -658,7 +658,7 @@ body.modal-open{overflow:hidden}
   .recruit-topbar{padding:10px 14px}
   .recruit-topbar .btn{min-height:38px;padding:8px 11px;font-size:.85rem}
   .recruit-hero{width:100%;min-height:auto;padding:44px 12px 28px}
-  .recruit-hero-bg,.recruit-hero-video{object-position:62% center}
+  .recruit-hero-bg,.recruit-hero-video{object-position:center center}
   .recruit-poster-frame{border-radius:8px}
   .recruit-stat-grid,.recruit-rank-grid{grid-template-columns:1fr}
   .recruit-stat{min-height:86px}
@@ -695,7 +695,7 @@ body.modal-open{overflow:hidden}
 .bento-raffle-tile{display:grid;grid-template-rows:auto 1fr;padding:0}
 .bento-raffle-tile .bento-content{padding:22px}
 .bento-image-button{overflow:hidden;background:#07101b}
-.bento-image-button img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center;transition:transform .28s ease,filter .28s ease}
+.bento-image-button img{display:block;width:100%;height:auto;object-fit:contain;object-position:center;transition:transform .28s ease,filter .28s ease}
 .bento-image-button:hover img,.bento-image-button:focus-visible img{transform:scale(1.04);filter:brightness(1.1) saturate(1.08)}
 .bento-stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:8px 0 4px}
 .bento-stat-row span{display:grid;gap:2px;min-width:0;padding:12px;border:1px solid rgba(86,182,255,.22);border-radius:8px;background:rgba(6,11,18,.64);color:#f5f0e8;font-weight:780}
