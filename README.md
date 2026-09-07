@@ -21,6 +21,7 @@ Responsive static website for GodTierPH.
 - `build-*.html` - Individual class build pages
 - `siege.html` - Siege preparation board
 - `contact.html` - Guild leadership contacts
+- `recruit/index.html` - Recruitment page at `/recruit/`
 
 ## Assets
 
