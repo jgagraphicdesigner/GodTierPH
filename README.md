@@ -25,11 +25,11 @@ Responsive static website for GodTierPH.
 
 ## Assets
 
-- `assets/godtierph-icon.png` - guild emblem
-- `assets/godtierph-logo.png` - extended logo asset
-- `assets/guild-league-map.png` - original Guild League battlefield map
-- `assets/guild-league-map-blue.png` - blue-side Guild League map
-- `assets/guild-league-map-red.png` - red-side Guild League map used in the mirrored red plan
+- `assets/godtierph-icon-small.webp` - lightweight guild emblem used in headers and footers
+- `assets/godtierph-icon-96.png` - small favicon
+- `assets/guild-league-map.webp` - original Guild League battlefield map
+- `assets/guild-league-map-blue.webp` - blue-side Guild League map
+- `assets/guild-league-map-red.webp` - red-side Guild League map used in the mirrored red plan
 
 ## Deploy
 

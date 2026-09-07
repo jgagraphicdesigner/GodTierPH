@@ -139,7 +139,7 @@ document.addEventListener('click', (event) => {
 
     musicAudio = new Audio(musicSource);
     musicAudio.loop = true;
-    musicAudio.preload = 'auto';
+    musicAudio.preload = 'none';
     musicAudio.volume = 0;
     return musicAudio;
   }
@@ -413,7 +413,9 @@ document.addEventListener('click', (event) => {
 
 (function initNeonLightningBackground() {
   const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-  if (motionQuery?.matches) return;
+  const mobileQuery = window.matchMedia?.('(max-width: 760px), (pointer: coarse)');
+  const saveData = navigator.connection?.saveData;
+  if (motionQuery?.matches || mobileQuery?.matches || saveData) return;
 
   const clouds = document.createElement('div');
   clouds.className = 'neon-thunder-clouds';
@@ -433,6 +435,7 @@ document.addEventListener('click', (event) => {
   let density = 1;
   let nextStrike = 0;
   let lastCloudFlash = 0;
+  let drawTimer = null;
   const bolts = [];
 
   function resizeCanvas() {
@@ -565,27 +568,61 @@ document.addEventListener('click', (event) => {
       }
     }
 
-    window.requestAnimationFrame(draw);
+    queueDraw();
+  }
+
+  function queueDraw() {
+    window.clearTimeout(drawTimer);
+    const delay = document.hidden ? 1000 : 42;
+    drawTimer = window.setTimeout(() => window.requestAnimationFrame(draw), delay);
   }
 
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
-  window.requestAnimationFrame(draw);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) queueDraw();
+  });
+  queueDraw();
 }());
 
 (function initHeroVideos() {
   const heroes = document.querySelectorAll('[data-home-hero], [data-video-hero]');
+  const desktopVideoQuery = window.matchMedia?.('(min-width: 761px) and (hover: hover) and (pointer: fine)');
+  const saveData = navigator.connection?.saveData;
 
   heroes.forEach((hero) => {
     const video = hero.querySelector('[data-home-hero-video], [data-video-hero-video]');
 
     if (!video) return;
 
+    function disableVideo() {
+      hero.classList.add('video-unavailable');
+      video.pause();
+      video.removeAttribute('src');
+      video.querySelectorAll('source').forEach((source) => source.removeAttribute('src'));
+      video.load();
+    }
+
     function showStaticHero() {
       hero.classList.remove('video-ready');
       hero.classList.add('video-ended');
       video.pause();
     }
+
+    if (saveData || desktopVideoQuery?.matches === false) {
+      disableVideo();
+      return;
+    }
+
+    let attachedSource = false;
+    video.querySelectorAll('source').forEach((source) => {
+      if (source.dataset.src && !source.getAttribute('src')) {
+        source.src = source.dataset.src;
+        attachedSource = true;
+      }
+    });
+    if (attachedSource) video.load();
+    video.preload = 'metadata';
 
     video.addEventListener('playing', () => {
       if (!hero.classList.contains('video-ended')) {
@@ -664,6 +701,8 @@ const rosterCsvUrls = {
   main: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=495643243&single=true&output=csv',
   sub: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=1609318158&single=true&output=csv',
 };
+const rosterStorageKey = 'godtierphRosterCache';
+const rosterCacheTtl = 5 * 60 * 1000;
 const leagueLabels = {
   main: 'Main League',
   sub: 'Sub League',
@@ -943,11 +982,40 @@ function updatePartyLookupOptions() {
   }
 }
 
-async function fetchLeagueRoster(league) {
+function getStoredRoster(league) {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(`${rosterStorageKey}:${league}`) || 'null');
+    if (!stored || !stored.csv || Date.now() - stored.savedAt > rosterCacheTtl) return null;
+    return parseRoster(parseCsv(stored.csv));
+  } catch (error) {
+    return null;
+  }
+}
+
+function storeRosterCsv(league, csv) {
+  try {
+    sessionStorage.setItem(`${rosterStorageKey}:${league}`, JSON.stringify({
+      csv,
+      savedAt: Date.now(),
+    }));
+  } catch (error) {
+    // Session storage can be unavailable or full; the live fetch still works.
+  }
+}
+
+async function fetchLeagueRoster(league, force = false) {
+  if (!force) {
+    const storedRoster = getStoredRoster(league);
+    if (storedRoster) return storedRoster;
+  }
+
   const rosterCsvUrl = rosterCsvUrls[league];
-  const response = await fetch(`${rosterCsvUrl}&cache=${Date.now()}`);
+  const response = await fetch(force ? `${rosterCsvUrl}&cache=${Date.now()}` : rosterCsvUrl, {
+    cache: force ? 'no-store' : 'no-cache',
+  });
   if (!response.ok) throw new Error(`${leagueLabels[league]} roster request failed`);
   const csv = await response.text();
+  storeRosterCsv(league, csv);
   return parseRoster(parseCsv(csv));
 }
 
@@ -957,7 +1025,7 @@ function renderActiveRoster() {
   renderRoster(sections);
 }
 
-async function loadPartyList() {
+async function loadPartyList(force = false) {
   if (!partyList && !partySearchForm) return;
 
   const currentToken = ++rosterLoadToken;
@@ -967,7 +1035,7 @@ async function loadPartyList() {
   const leagueKeys = Object.keys(rosterCsvUrls);
   const results = await Promise.allSettled(leagueKeys.map(async (league) => ({
     league,
-    sections: await fetchLeagueRoster(league),
+    sections: await fetchLeagueRoster(league, force),
   })));
 
   if (currentToken !== rosterLoadToken) return;
@@ -1150,10 +1218,12 @@ document.addEventListener('keydown', (event) => {
 leagueTabs.forEach((tab) => {
   tab.addEventListener('click', () => setActiveLeague(tab.dataset.league));
 });
-refreshPartyList?.addEventListener('click', loadPartyList);
+refreshPartyList?.addEventListener('click', () => loadPartyList(true));
 if (partyList || partySearchForm) {
   loadPartyList();
-  setInterval(loadPartyList, 5 * 60 * 1000);
+  setInterval(() => {
+    if (!document.hidden) loadPartyList();
+  }, 10 * 60 * 1000);
 }
 
 (function initOnlineUsersWidget() {
@@ -1161,8 +1231,8 @@ if (partyList || partySearchForm) {
 
   const storagePrefix = 'godtierphPresence:';
   const sessionKey = 'godtierphPresenceSession';
-  const ttl = 18000;
-  const heartbeatDelay = 6000;
+  const ttl = 90000;
+  const heartbeatDelay = 30000;
   const liveHost = /(^|\.)godtierph\.com$/i.test(window.location.hostname);
   const defaultEndpoint = liveHost ? 'https://godtierph-presence.godtierph.workers.dev/api/presence' : '';
   const endpoint = window.GODTIERPH_PRESENCE_ENDPOINT || defaultEndpoint;
@@ -1278,7 +1348,7 @@ if (partyList || partySearchForm) {
 
   window.addEventListener('storage', heartbeat);
   window.addEventListener('pagehide', releasePresence);
-  heartbeat();
+  window.setTimeout(heartbeat, 1200);
   window.setInterval(heartbeat, heartbeatDelay);
 }());
 

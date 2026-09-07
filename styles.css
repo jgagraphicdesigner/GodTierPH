@@ -66,6 +66,7 @@ img{display:block;max-width:100%}
 .nav-group:hover .submenu,.nav-group:focus-within .submenu,.nav-group.open .submenu{display:block}
 .menu-btn{display:none;background:#171d25;color:white;border-color:#354252}
 .section{width:min(1220px,calc(100% - 36px));margin:0 auto;padding:82px 0;scroll-margin-top:86px}
+main > .section:not(.hero):not(.league-hero):not(.page-hero){content-visibility:auto;contain-intrinsic-size:1px 720px}
 .tight{padding-top:44px}
 .hero{min-height:72vh;display:grid;grid-template-columns:1.15fr .85fr;align-items:center;gap:48px}
 .home-hero{position:relative;width:100%;min-height:calc(100vh - 73px);grid-template-columns:1fr;align-content:center;margin:0;padding:clamp(92px,12vw,150px) 0;overflow:hidden;background:#07101b;border-bottom:1px solid rgba(86,182,255,.22)}
@@ -580,8 +581,14 @@ body.modal-open{overflow:hidden}
   .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:760px){
+  body:before,body:after{animation:none;filter:none;transform:none}
+  body:before{opacity:.04}
+  body:after{opacity:.025}
+  .neon-thunder-clouds,.neon-lightning-canvas{display:none}
+  .home-hero-video,.recruit-hero-video{display:none}
+  .image-lightbox-backdrop,.party-lookup-backdrop,.online-users-widget,.sound-toggle,.recruit-topbar{backdrop-filter:none}
   .menu-btn{display:inline-flex}
-  .topbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:10px 14px}
+  .topbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:10px 14px;background:rgba(7,8,12,.97);backdrop-filter:none}
   .brand{flex:1;min-width:0}
   .brand-icon{width:42px;height:42px}
   .brand strong{font-size:.9rem}
@@ -655,6 +662,8 @@ body.modal-open{overflow:hidden}
   .recruit-poster-frame{border-radius:8px}
   .recruit-stat-grid,.recruit-rank-grid{grid-template-columns:1fr}
   .recruit-stat{min-height:86px}
+  .hero-card,.info-card,.role-card,.step-card,.class-card,.event-row,.contact-card,.quick-link,.map-panel,.sheet-panel,.party-card,.media-card,.bento-tile,.recruit-stat,.recruit-ranking-card,.recruit-rank-grid article{box-shadow:0 14px 34px rgba(0,0,0,.28)}
+  .bento-tile:hover{transform:none}
 }
 
 /* Bento war board refresh */
