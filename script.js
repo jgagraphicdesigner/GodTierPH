@@ -698,11 +698,11 @@ const partyLookupResults = document.getElementById('partyLookupResults');
 const partyLookupTitle = document.getElementById('partyLookupTitle');
 const partyLookupCard = partyLookupModal?.querySelector('.party-lookup-card');
 const rosterCsvUrls = {
-  main: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=495643243&single=true&output=csv',
-  sub: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmWixlFa2eg6ORNNiO7YTGoWqjBoiuVjwxHQeKB1N8xu08sN_P-5hSQp8Kcm_y7Q/pub?gid=1609318158&single=true&output=csv',
+  main: 'https://docs.google.com/spreadsheets/d/1CkHXiGccl8uYSJ2OZHcRe5FbJe1bWVZI/export?format=csv&gid=495643243',
+  sub: 'https://docs.google.com/spreadsheets/d/1CkHXiGccl8uYSJ2OZHcRe5FbJe1bWVZI/export?format=csv&gid=1609318158',
 };
 const rosterStorageKey = 'godtierphRosterCache';
-const rosterCacheTtl = 5 * 60 * 1000;
+const rosterCacheTtl = 0;
 const leagueLabels = {
   main: 'Main League',
   sub: 'Sub League',
@@ -982,10 +982,15 @@ function updatePartyLookupOptions() {
   }
 }
 
+function addRosterCacheBust(url) {
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}cache=${Date.now()}`;
+}
+
 function getStoredRoster(league) {
   try {
     const stored = JSON.parse(sessionStorage.getItem(`${rosterStorageKey}:${league}`) || 'null');
-    if (!stored || !stored.csv || Date.now() - stored.savedAt > rosterCacheTtl) return null;
+    if (rosterCacheTtl <= 0 || !stored || !stored.csv || Date.now() - stored.savedAt > rosterCacheTtl) return null;
     return parseRoster(parseCsv(stored.csv));
   } catch (error) {
     return null;
@@ -1010,12 +1015,12 @@ async function fetchLeagueRoster(league, force = false) {
   }
 
   const rosterCsvUrl = rosterCsvUrls[league];
-  const response = await fetch(force ? `${rosterCsvUrl}&cache=${Date.now()}` : rosterCsvUrl, {
-    cache: force ? 'no-store' : 'no-cache',
+  const response = await fetch(addRosterCacheBust(rosterCsvUrl), {
+    cache: 'no-store',
   });
   if (!response.ok) throw new Error(`${leagueLabels[league]} roster request failed`);
   const csv = await response.text();
-  storeRosterCsv(league, csv);
+  if (rosterCacheTtl > 0) storeRosterCsv(league, csv);
   return parseRoster(parseCsv(csv));
 }
 
