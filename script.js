@@ -761,40 +761,76 @@ function normalizePartyName(sectionName, partyName, partyIndex) {
   return partyName;
 }
 
+function getSectionMarkers(row) {
+  return row
+    .map((cell, column) => ({ cell: (cell || '').trim(), column }))
+    .filter(({ cell }) => /^team\s+\d+/i.test(cell));
+}
+
+function getSectionEndColumn(markers, markerIndex, header, rows, startRow, endRow) {
+  if (markerIndex < markers.length - 1) return markers[markerIndex + 1].column;
+
+  let widestRow = header.length;
+  for (let rowIndex = startRow; rowIndex < endRow; rowIndex += 1) {
+    widestRow = Math.max(widestRow, rows[rowIndex]?.length || 0);
+  }
+
+  return widestRow;
+}
+
+function getRoleLabel(row, startColumn) {
+  const globalLabel = row[0] || '';
+  if (globalLabel) return globalLabel;
+
+  for (let column = startColumn - 1; column >= 0; column -= 1) {
+    const cell = row[column] || '';
+    if (/leader/i.test(cell)) return cell;
+  }
+
+  return '';
+}
+
 function parseRoster(rows) {
   const sections = [];
   let index = 0;
 
   while (index < rows.length) {
-    const row = rows[index];
-    const filled = row.filter(Boolean);
-    const sectionName = filled.length === 1 && /^team\s+\d+/i.test(filled[0]) ? filled[0] : '';
+    const markers = getSectionMarkers(rows[index] || []);
 
-    if (!sectionName) {
+    if (!markers.length) {
       index += 1;
       continue;
     }
 
+    let nextSectionIndex = rows.length;
+    for (let nextIndex = index + 1; nextIndex < rows.length; nextIndex += 1) {
+      if (getSectionMarkers(rows[nextIndex] || []).length) {
+        nextSectionIndex = nextIndex;
+        break;
+      }
+    }
+
     const header = rows[index + 1] || [];
-    const partyColumns = header
-      .map((cell, column) => ({ cell, column }))
-      .filter(({ cell }) => /^party\s+\d+/i.test(cell));
-    const parties = partyColumns.map(({ cell, column }, partyIndex) => ({
-      name: normalizePartyName(sectionName, cell, partyIndex),
-      members: [],
-      nameColumn: column,
-      jobColumn: column + 1,
-    }));
 
-    index += 2;
-    while (index < rows.length) {
-      const memberRow = rows[index];
-      const filledMemberRow = memberRow.filter(Boolean);
-      const nextSection = filledMemberRow.length === 1 && /^team\s+\d+/i.test(filledMemberRow[0]);
+    markers.forEach((marker, markerIndex) => {
+      const sectionName = marker.cell;
+      const startColumn = marker.column;
+      const endColumn = getSectionEndColumn(markers, markerIndex, header, rows, index + 2, nextSectionIndex);
+      const partyColumns = header
+        .map((cell, column) => ({ cell, column }))
+        .filter(({ cell, column }) => column >= startColumn && column < endColumn && /^party\s+\d+/i.test(cell));
+      const parties = partyColumns.map(({ cell, column }, partyIndex) => ({
+        name: normalizePartyName(sectionName, cell, partyIndex),
+        members: [],
+        nameColumn: column,
+        jobColumn: column + 1,
+      }));
 
-      if (nextSection) break;
-      if (!isBlankRow(memberRow)) {
-        const rowLabelText = memberRow[0] || '';
+      for (let rowIndex = index + 2; rowIndex < nextSectionIndex; rowIndex += 1) {
+        const memberRow = rows[rowIndex] || [];
+        if (isBlankRow(memberRow)) continue;
+
+        const rowLabelText = getRoleLabel(memberRow, startColumn);
         const rowLabel = rowLabelText.toLowerCase();
         parties.forEach((party) => {
           const name = memberRow[party.nameColumn] || '';
@@ -811,18 +847,21 @@ function parseRoster(rows) {
           }
         });
       }
-      index += 1;
-    }
 
-    sections.push({
-      name: sectionName,
-      parties: parties.filter((party) => party.members.length),
+      const filledParties = parties.filter((party) => party.members.length);
+      if (filledParties.length) {
+        sections.push({
+          name: sectionName,
+          parties: filledParties,
+        });
+      }
     });
+
+    index = nextSectionIndex;
   }
 
   return sections;
 }
-
 function textNode(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
